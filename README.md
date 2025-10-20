@@ -1,94 +1,112 @@
-# 10x Astro Starter
+# 10xCards
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+[![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
+An AI-powered web application designed to revolutionize the creation of educational flashcards for computer science students.
+
+## Table of Contents
+
+- [Project Description](#project-description)
+- [Tech Stack](#tech-stack)
+- [Getting Started Locally](#getting-started-locally)
+- [Available Scripts](#available-scripts)
+- [Project Scope](#project-scope)
+- [Project Status](#project-status)
+- [License](#license)
+
+## Project Description
+
+10xCards solves the problem of time-consuming manual flashcard creation. By leveraging AI, the application automates the generation of flashcards from text notes, allowing students to focus on learning rather than preparation. Users can generate, manage, and edit flashcard decks, and study them using an integrated spaced repetition algorithm. This project is being developed as a hobby to provide a simple yet effective learning tool.
 
 ## Tech Stack
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
+The project is built with a modern tech stack:
 
-## Prerequisites
+| Category              | Technology                                                     |
+| --------------------- | -------------------------------------------------------------- |
+| **Frontend**          | Astro 5, React 19, TypeScript 5, Tailwind CSS 4, shadcn/ui     |
+| **Backend & Database**| Supabase                                                       |
+| **AI Integration**    | OpenRouter.ai                                                  |
+| **CI/CD & Hosting**   | GitHub Actions, DigitalOcean                                   |
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
-- npm (comes with Node.js)
+## Getting Started Locally
 
-## Getting Started
+To run the project locally, follow these steps:
 
-1. Clone the repository:
+### Prerequisites
 
-```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
-```
+- Node.js `22.14.0` (it is recommended to use `nvm` - `nvm use`)
+- npm (or your preferred package manager)
 
-2. Install dependencies:
+### Installation
 
-```bash
-npm install
-```
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/10x-cards.git
+    cd 10x-cards
+    ```
 
-3. Run the development server:
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-```bash
-npm run dev
-```
+3.  **Set up environment variables:**
+    Create a `.env` file in the root of the project and add the necessary environment variables. You can copy the example file:
+    ```bash
+    cp .env.example .env
+    ```
+    You will need to provide your own credentials for services like Supabase and OpenRouter.
+    ```env
+    # Supabase
+    PUBLIC_SUPABASE_URL=your_supabase_url
+    PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-4. Build for production:
+    # OpenRouter.ai
+    OPENROUTER_API_KEY=your_openrouter_api_key
+    ```
 
-```bash
-npm run build
-```
+4.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
+    The application will be available at `http://localhost:4321`.
 
 ## Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+This project includes the following scripts defined in `package.json`:
 
-## Project Structure
+- `npm run dev`: Starts the development server.
+- `npm run build`: Builds the application for production.
+- `npm run preview`: Previews the production build locally.
+- `npm run lint`: Lints the codebase for errors.
+- `npm run lint:fix`: Lints and automatically fixes issues.
+- `npm run format`: Formats the code using Prettier.
 
-```md
-.
-├── src/
-│   ├── layouts/    # Astro layouts
-│   ├── pages/      # Astro pages
-│   │   └── api/    # API endpoints
-│   ├── components/ # UI components (Astro & React)
-│   └── assets/     # Static assets
-├── public/         # Public assets
-```
+## Project Scope
 
-## AI Development Support
+### In Scope (MVP)
 
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
+-   **User Accounts**: Registration and login to manage flashcard decks.
+-   **AI Flashcard Generation**: Generate flashcards from text (up to 10,000 characters).
+-   **Manual Creation**: Manually add, edit, and delete flashcards.
+-   **Deck Management**: A dashboard to view, edit, and delete decks.
+-   **Spaced Repetition**: Integration with an open-source library for spaced repetition.
+-   **Learning Interface**: A simple interface for study sessions.
 
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
+### Out of Scope
 
-### Cursor IDE
+-   Advanced, proprietary repetition algorithms (e.g., SuperMemo/Anki style).
+-   Importing files in various formats (PDF, DOCX).
+-   Sharing and publishing flashcard decks.
+-   Integrations with external educational platforms.
+-   Dedicated mobile applications.
+-   Monetization and commercial features.
 
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
+## Project Status
 
-### GitHub Copilot
-
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
-
-### Windsurf
-
-The `.windsurfrules` file contains AI configuration for Windsurf.
-
-## Contributing
-
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+This is a hobby project and is currently under **active development**. New features and improvements are being added continuously.
 
 ## License
 
-MIT
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
