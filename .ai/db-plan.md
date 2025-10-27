@@ -23,8 +23,11 @@ Przechowuje zestawy fiszek należące do użytkowników.
 - `id` (UUID, PRIMARY KEY, DEFAULT gen_random_uuid())
 - `user_id` (UUID, NOT NULL, FOREIGN KEY → auth.users.id)
 - `name` (VARCHAR(100), NOT NULL)
+- `model` (VARCHAR(100), NOT NULL)
+- `generation_duration` (INTEGER, NOT NULL)
 - `created_at` (TIMESTAMP WITH TIME ZONE, NOT NULL, DEFAULT NOW())
 - `updated_at` (TIMESTAMP WITH TIME ZONE, NOT NULL, DEFAULT NOW())
+
 
 **Ograniczenia:**
 - `UNIQUE(user_id, name)` - Zapewnia unikalność nazwy zestawu dla każdego użytkownika
@@ -52,22 +55,20 @@ Przechowuje pojedyncze fiszki w ramach zestawów.
 
 ---
 
-### 1.4. `flashcard_sets_error_logs`
+### 1.4. `error_logs`
 Rejestruje błędy występujące podczas operacji na zestawach fiszek (głównie podczas generowania przez AI).
 
 **Kolumny:**
 - `id` (UUID, PRIMARY KEY, DEFAULT gen_random_uuid())
 - `user_id` (UUID, NOT NULL, FOREIGN KEY → auth.users.id)
-- `set_id` (UUID, NULLABLE, FOREIGN KEY → flashcard_sets.id)
+- `model` (VARCHAR(100), NOT NULL)
 - `error_type` (VARCHAR(100), NOT NULL)
 - `error_message` (TEXT, NOT NULL)
 - `input_payload` (JSONB, NULLABLE)
-- `stack_trace` (TEXT, NULLABLE)
 - `created_at` (TIMESTAMP WITH TIME ZONE, NOT NULL, DEFAULT NOW())
 
 **Ograniczenia:**
 - `FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE`
-- `FOREIGN KEY (set_id) REFERENCES flashcard_sets(id) ON DELETE SET NULL` - Zachowuje logi nawet po usunięciu zestawu
 
 ---
 
@@ -102,17 +103,11 @@ CREATE TYPE flashcard_source AS ENUM ('manual', 'ai-full', 'ai-edited');
 - **Klucz obcy:** `flashcards.set_id` → `flashcard_sets.id`
 - **Kaskada:** `ON DELETE CASCADE` - Usunięcie zestawu usuwa wszystkie zawarte w nim fiszki
 
-### 3.3. `auth.users` → `flashcard_sets_error_logs`
+### 3.3. `auth.users` → `error_logs`
 - **Typ relacji:** Jeden-do-wielu (1:N)
 - **Opis:** Jeden użytkownik może mieć wiele logów błędów
-- **Klucz obcy:** `flashcard_sets_error_logs.user_id` → `auth.users.id`
+- **Klucz obcy:** `error_logs.user_id` → `auth.users.id`
 - **Kaskada:** `ON DELETE CASCADE` - Usunięcie użytkownika usuwa jego logi błędów
-
-### 3.4. `flashcard_sets` → `flashcard_sets_error_logs`
-- **Typ relacji:** Jeden-do-wielu (1:N)
-- **Opis:** Jeden zestaw może mieć wiele powiązanych logów błędów
-- **Klucz obcy:** `flashcard_sets_error_logs.set_id` → `flashcard_sets.id`
-- **Kaskada:** `ON DELETE SET NULL` - Usunięcie zestawu nie usuwa logów, ustawia `set_id` na NULL
 
 ---
 
@@ -142,17 +137,15 @@ CREATE INDEX idx_flashcards_flagged ON flashcards(flagged) WHERE flagged = true;
 - `idx_flashcards_source` - Umożliwia szybkie obliczanie metryk adopcji AI (US-002)
 - `idx_flashcards_flagged` - Indeks częściowy dla oflagowanych fiszek (analiza jakości AI)
 
-### 4.3. Indeksy na `flashcard_sets_error_logs`
+### 4.3. Indeksy na `error_logs`
 ```sql
-CREATE INDEX idx_error_logs_user_id ON flashcard_sets_error_logs(user_id);
-CREATE INDEX idx_error_logs_set_id ON flashcard_sets_error_logs(set_id) WHERE set_id IS NOT NULL;
-CREATE INDEX idx_error_logs_created_at ON flashcard_sets_error_logs(created_at DESC);
-CREATE INDEX idx_error_logs_error_type ON flashcard_sets_error_logs(error_type);
+CREATE INDEX idx_error_logs_user_id ON error_logs(user_id);
+CREATE INDEX idx_error_logs_created_at ON error_logs(created_at DESC);
+CREATE INDEX idx_error_logs_error_type ON error_logs(error_type);
 ```
 
 **Uzasadnienie:**
 - `idx_error_logs_user_id` - Zapytania diagnostyczne dla konkretnego użytkownika
-- `idx_error_logs_set_id` - Indeks częściowy dla logów związanych z konkretnym zestawem
 - `idx_error_logs_created_at` - Sortowanie chronologiczne logów
 - `idx_error_logs_error_type` - Agregacje i analiza typów błędów
 
@@ -270,11 +263,11 @@ USING (
 
 ---
 
-### 5.3. Polityki dla `flashcard_sets_error_logs`
+### 5.3. Polityki dla `error_logs`
 
 **Włączenie RLS:**
 ```sql
-ALTER TABLE flashcard_sets_error_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE error_logs ENABLE ROW LEVEL SECURITY;
 ```
 
 **Polityki:**
@@ -282,14 +275,14 @@ ALTER TABLE flashcard_sets_error_logs ENABLE ROW LEVEL SECURITY;
 #### SELECT Policy
 ```sql
 CREATE POLICY "Users can view their own error logs"
-ON flashcard_sets_error_logs FOR SELECT
+ON error_logs FOR SELECT
 USING (auth.uid() = user_id);
 ```
 
 #### INSERT Policy
 ```sql
 CREATE POLICY "Users can create their own error logs"
-ON flashcard_sets_error_logs FOR INSERT
+ON error_logs FOR INSERT
 WITH CHECK (auth.uid() = user_id);
 ```
 
@@ -365,10 +358,8 @@ EXECUTE FUNCTION update_flashcard_source_on_edit();
 - Domyślna wartość `false` zapewnia, że nowe fiszki nie są flagowane
 
 ### 7.4. Logowanie Błędów
-- Tabela `flashcard_sets_error_logs` przechowuje szczegółowe informacje o błędach
+- Tabela `error_logs` przechowuje szczegółowe informacje o błędach
 - `input_payload` (JSONB) może zawierać oryginalny tekst wejściowy, parametry API, itp.
-- `stack_trace` umożliwia głębszą diagnostykę problemów
-- Polityka `ON DELETE SET NULL` dla `set_id` zachowuje historyczne logi nawet po usunięciu zestawu
 
 ### 7.5. Bezpieczeństwo i Izolacja Danych
 - Wszystkie tabele mają włączone RLS (Row-Level Security)
@@ -410,23 +401,22 @@ Schemat jest zaprojektowany z myślą o łatwym rozszerzeniu o:
 **Liczba tabel:** 3 (+ 1 built-in: auth.users)
 - `flashcard_sets`
 - `flashcards`
-- `flashcard_sets_error_logs`
+- `error_logs`
 
 **Liczba typów ENUM:** 1
 - `flashcard_source`
 
-**Liczba relacji:** 4
+**Liczba relacji:** 3
 - auth.users → flashcard_sets (1:N)
 - flashcard_sets → flashcards (1:N)
-- auth.users → flashcard_sets_error_logs (1:N)
-- flashcard_sets → flashcard_sets_error_logs (1:N)
+- auth.users → error_logs (1:N)
 
-**Liczba indeksów:** 11 (3 unique, 2 partial)
+**Liczba indeksów:** 10 (3 unique, 1 partial)
 
-**Liczba polityk RLS:** 11
+**Liczba polityk RLS:** 10
 - flashcard_sets: 4 (SELECT, INSERT, UPDATE, DELETE)
 - flashcards: 4 (SELECT, INSERT, UPDATE, DELETE)
-- flashcard_sets_error_logs: 2 (SELECT, INSERT)
+- error_logs: 2 (SELECT, INSERT)
 
 **Liczba triggerów:** 3
 - update_flashcard_sets_updated_at
