@@ -56,15 +56,17 @@ To run the project locally, follow these steps:
     ```bash
     cp .env.example .env
     ```
-    You will need to provide your own credentials for services like Supabase and OpenRouter.
+    You will need to provide your own credentials for services like Supabase.
     ```env
-    # Supabase
-    PUBLIC_SUPABASE_URL=your_supabase_url
-    PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+    # Supabase (Required)
+    SUPABASE_URL=your_supabase_url
+    SUPABASE_KEY=your_supabase_anon_key
 
-    # OpenRouter.ai
+    # OpenRouter.ai (Optional - Mock AI is used by default in development)
     OPENROUTER_API_KEY=your_openrouter_api_key
     ```
+    
+    **Note:** The application uses a mock AI service by default in development mode, so you can start developing immediately without an OpenRouter API key. To use the real AI service, add your `OPENROUTER_API_KEY` to the `.env` file and set `USE_MOCK_AI=false`.
 
 4.  **Run the development server:**
     ```bash

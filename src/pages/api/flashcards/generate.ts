@@ -9,24 +9,21 @@
 
 import type { APIRoute } from "astro";
 import { z } from "zod";
-import type {
-  GenerateFlashcardsRequestDTO,
-  GenerateFlashcardsResponseDTO,
-  ErrorResponseDTO,
-} from "../../../types";
+import type { GenerateFlashcardsRequestDTO, GenerateFlashcardsResponseDTO, ErrorResponseDTO } from "../../../types";
 import { generateFlashcards, AIServiceUnavailableError } from "../../../lib/ai/generation.service";
+import { generateFlashcardsMock } from "../../../lib/ai/generation.service.mock";
 import { logGenerationError, createErrorLogData } from "../../../lib/logging/error.service";
 import { DEFAULT_USER_ID } from "../../../db/supabase.client";
+
+// Use mock service in development mode
+const USE_MOCK_AI = import.meta.env.DEV || import.meta.env.USE_MOCK_AI === "true";
 
 // Disable pre-rendering for this API route
 export const prerender = false;
 
 // Zod schema for request validation
 const GenerateFlashcardsRequestSchema = z.object({
-  text: z
-    .string()
-    .min(1, "Text cannot be empty")
-    .max(10000, "Text cannot exceed 10,000 characters"),
+  text: z.string().min(1, "Text cannot be empty").max(10000, "Text cannot exceed 10,000 characters"),
   model: z.string().optional(),
 });
 
@@ -49,7 +46,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   }
 
@@ -72,7 +69,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       {
         status: 422,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   }
 
@@ -91,7 +88,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       {
         status: 400,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   }
 
@@ -99,11 +96,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const { text, model } = validatedData;
 
   // Determine which model to use (use provided model or let service use default)
-  const modelToUse = model || "openai/gpt-4o"; // Fallback to default if not provided
+  const modelToUse = model || (USE_MOCK_AI ? "mock-model" : "openai/gpt-4o");
 
   try {
-    // Call AI generation service
-    const flashcardProposals = await generateFlashcards(text, modelToUse);
+    // Call AI generation service (mock or real based on environment)
+    const flashcardProposals = USE_MOCK_AI
+      ? await generateFlashcardsMock(text, modelToUse)
+      : await generateFlashcards(text, modelToUse);
 
     // Calculate generation duration
     const generationDuration = Date.now() - startTime;
@@ -157,7 +156,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         {
           status: 503,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
@@ -176,8 +175,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   }
 };
-
