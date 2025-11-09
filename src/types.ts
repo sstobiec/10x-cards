@@ -232,6 +232,8 @@ export interface FlashcardCreateCommand {
   rewers: string;
   /** Source of the flashcard */
   source: FlashcardSource;
+  /** Whether the flashcard is flagged as low quality */
+  flagged: boolean;
 }
 
 /**
@@ -278,4 +280,44 @@ export function isUpdateFlashcardRequest(value: unknown): value is UpdateFlashca
     (obj.avers === undefined || typeof obj.avers === "string") &&
     (obj.rewers === undefined || typeof obj.rewers === "string")
   );
+}
+
+// ============================================================================
+// View Models (for UI state management)
+// ============================================================================
+
+/**
+ * Represents the overall state of the generation view
+ */
+export type GenerationViewState =
+  | "idle" // Initial state
+  | "generating" // Flashcards are being generated
+  | "reviewing" // User is reviewing and editing proposals
+  | "saving" // Set is being saved
+  | "success" // Set successfully saved
+  | "error"; // An error occurred
+
+/**
+ * Represents a flashcard proposal in the UI state
+ */
+export interface FlashcardProposalViewModel {
+  /** Unique client-side identifier (e.g. uuidv4) */
+  id: string;
+  /** Front of the flashcard (question) */
+  avers: string;
+  /** Back of the flashcard (answer) */
+  rewers: string;
+  /** Source of the flashcard */
+  source: "ai-full" | "ai-edited";
+  /** Whether the flashcard is flagged as low quality */
+  isFlagged: boolean;
+}
+
+/**
+ * Represents an API error to display in the UI
+ */
+export interface ApiError {
+  title: string;
+  message: string;
+  details?: Record<string, unknown>;
 }

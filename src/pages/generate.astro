@@ -1,0 +1,12 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { GenerationView } from "@/components/views";
+
+// Disable prerendering for this page (dynamic content)
+export const prerender = false;
+---
+
+<Layout title="Generuj fiszki - 10x Cards">
+  <GenerationView client:load />
+</Layout>
+
