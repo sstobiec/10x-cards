@@ -6,6 +6,7 @@
  * to ensure type safety and consistency.
  */
 
+import { z } from 'zod';
 import type { Tables, TablesInsert, Enums } from "./db/database.types";
 
 // ============================================================================
@@ -321,3 +322,31 @@ export interface ApiError {
   message: string;
   details?: Record<string, unknown>;
 }
+
+// ============================================================================
+// Zod Schemas for OpenRouter API Integration
+// ============================================================================
+
+/**
+ * Zod schema for a single flashcard proposal
+ */
+export const FlashcardProposalSchema = z.object({
+  avers: z.string().min(1).describe('Pytanie, które pojawi się na awersie fiszki.'),
+  rewers: z.string().min(1).describe('Odpowiedź, która pojawi się na rewersie fiszki.'),
+});
+
+/**
+ * Zod schema for flashcard generation response
+ */
+export const FlashcardGenerationSchema = z.object({
+  flashcard_proposals: z
+    .array(FlashcardProposalSchema)
+    .min(1)
+    .max(20)
+    .describe('Lista wygenerowanych propozycji fiszek (od 1 do 20).'),
+});
+
+/**
+ * Type inferred from FlashcardGenerationSchema
+ */
+export type FlashcardGeneration = z.infer<typeof FlashcardGenerationSchema>;

@@ -10,7 +10,9 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import type { GenerateFlashcardsRequestDTO, GenerateFlashcardsResponseDTO, ErrorResponseDTO } from "../../../types";
-import { generateFlashcards, AIServiceUnavailableError } from "../../../lib/ai/generation.service";
+import { FlashcardGenerationSchema } from "../../../types";
+import { OpenRouterService } from "../../../lib/openrouter.service";
+import { ApiError, ConfigurationError, ValidationError } from "../../../lib/ai/errors";
 import { generateFlashcardsMock } from "../../../lib/ai/generation.service.mock";
 import { logGenerationError, createErrorLogData } from "../../../lib/logging/error.service";
 import { DEFAULT_USER_ID } from "../../../db/supabase.client";
@@ -99,10 +101,37 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const modelToUse = model || (USE_MOCK_AI ? "mock-model" : "openai/gpt-4o");
 
   try {
+    let flashcardProposals;
+
     // Call AI generation service (mock or real based on environment)
-    const flashcardProposals = USE_MOCK_AI
-      ? await generateFlashcardsMock(text, modelToUse)
-      : await generateFlashcards(text, modelToUse);
+    if (USE_MOCK_AI) {
+      flashcardProposals = await generateFlashcardsMock(text, modelToUse);
+    } else {
+      // Use new OpenRouterService with structured output
+      const openRouterService = new OpenRouterService();
+      
+      const systemPrompt = `You are an expert in creating learning materials. Your task is to generate flashcard proposals from the provided text. 
+Focus on extracting key concepts, definitions, facts, and relationships.
+Return your response in JSON format according to the provided schema.`;
+
+      const userPrompt = `Generate flashcard proposals from the following text. Each flashcard should have:
+- avers: A clear, specific question
+- rewers: A concise but complete answer
+
+Generate between 5 and 20 flashcards depending on content complexity.
+
+Text:
+${text}`;
+
+      const result = await openRouterService.generateStructuredResponse({
+        systemPrompt,
+        userPrompt,
+        schema: FlashcardGenerationSchema,
+        modelName: modelToUse,
+      });
+
+      flashcardProposals = result.flashcard_proposals;
+    }
 
     // Calculate generation duration
     const generationDuration = Date.now() - startTime;
@@ -140,13 +169,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
       console.error("Failed to log error to database:", loggingError);
     }
 
-    // Handle AI service unavailable errors (503)
-    if (error instanceof AIServiceUnavailableError) {
+    // Handle configuration errors (500)
+    if (error instanceof ConfigurationError) {
       return new Response(
         JSON.stringify({
           error: {
-            code: "SERVICE_UNAVAILABLE",
-            message: "AI service is temporarily unavailable. Please try again later.",
+            code: "CONFIGURATION_ERROR",
+            message: "Service configuration error. Please contact support.",
             details: {
               model: modelToUse,
               duration: errorDuration,
@@ -154,7 +183,51 @@ export const POST: APIRoute = async ({ request, locals }) => {
           },
         } satisfies ErrorResponseDTO),
         {
-          status: 503,
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Handle validation errors (422)
+    if (error instanceof ValidationError) {
+      return new Response(
+        JSON.stringify({
+          error: {
+            code: "VALIDATION_ERROR",
+            message: error.message,
+            details: {
+              model: modelToUse,
+              duration: errorDuration,
+            },
+          },
+        } satisfies ErrorResponseDTO),
+        {
+          status: 422,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Handle API errors (use status from error)
+    if (error instanceof ApiError) {
+      const statusCode = error.status >= 500 ? 503 : error.status;
+      return new Response(
+        JSON.stringify({
+          error: {
+            code: error.status >= 500 ? "SERVICE_UNAVAILABLE" : "API_ERROR",
+            message: error.status >= 500 
+              ? "AI service is temporarily unavailable. Please try again later."
+              : error.message,
+            details: {
+              model: modelToUse,
+              duration: errorDuration,
+              originalStatus: error.status,
+            },
+          },
+        } satisfies ErrorResponseDTO),
+        {
+          status: statusCode,
           headers: { "Content-Type": "application/json" },
         }
       );
