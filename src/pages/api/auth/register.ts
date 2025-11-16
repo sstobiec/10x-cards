@@ -9,12 +9,12 @@ const registerSchema = z
     username: z
       .string()
       .min(3, "Nazwa użytkownika musi mieć co najmniej 3 znaki")
-      .max(20, "Nazwa użytkownika może mieć maksymalnie 20 znaków"),
+      .max(50, "Nazwa użytkownika może mieć maksymalnie 50 znaków"),
     email: z.string().email("Nieprawidłowy adres email"),
     password: z
       .string()
       .min(8, "Hasło musi mieć co najmniej 8 znaków")
-      .max(72, "Hasło może mieć maksymalnie 72 znaki"),
+      .max(100, "Hasło może mieć maksymalnie 100 znaków"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -43,7 +43,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       );
     }
 
-    const { username, email, password } = validationResult.data;
+    const { email, password, username } = validationResult.data;
 
     // Create Supabase client
     const supabase = createSupabaseServerInstance({
@@ -80,7 +80,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
       return new Response(
         JSON.stringify({
-          error: "Wystąpił błąd podczas rejestracji",
+          error: error.message || "Błąd podczas rejestracji",
         }),
         {
           status: 400,
@@ -91,14 +91,15 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       );
     }
 
-    // Return success with user data
+    // Return success response
+    // Note: User needs to confirm their email before they can log in
     return new Response(
       JSON.stringify({
         success: true,
+        message: "Rejestracja zakończona pomyślnie. Sprawdź swoją skrzynkę email.",
         user: {
           id: data.user?.id,
           email: data.user?.email,
-          username,
         },
       }),
       {

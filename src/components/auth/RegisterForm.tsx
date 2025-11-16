@@ -48,7 +48,7 @@ export default function RegisterForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Wystąpił błąd podczas rejestracji");
+        setError(data.error || "Błąd podczas rejestracji");
         setIsLoading(false);
         return;
       }
@@ -69,8 +69,11 @@ export default function RegisterForm() {
             Sprawdź swoją skrzynkę mailową
           </h2>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Wysłaliśmy link weryfikacyjny na Twój adres email. Kliknij go, aby
-            potwierdzić rejestrację.
+            Wysłaliśmy link weryfikacyjny na adres <strong>{email}</strong>.
+            Kliknij go, aby potwierdzić rejestrację i aktywować swoje konto.
+          </p>
+          <p className="mt-2 text-center text-sm text-muted-foreground">
+            Po potwierdzeniu email będziesz mógł zalogować się do swojego konta.
           </p>
           <div className="mt-6 text-center">
             <a
