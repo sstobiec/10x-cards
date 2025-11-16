@@ -11,10 +11,11 @@ export default function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
+    // Client-side validation
     if (!username || !email || !password || !confirmPassword) {
       setError("Wszystkie pola są wymagane.");
       return;
@@ -23,18 +24,41 @@ export default function RegisterForm() {
       setError("Hasła nie są takie same.");
       return;
     }
-    // Add more client-side validation as needed (e.g., password strength)
 
     setIsLoading(true);
-    console.log("Submitting:", { username, email, password });
-    // TODO: Implement API call to /api/auth/register
-    setTimeout(() => {
-      setIsLoading(false);
-      // Mock success
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, email, password, confirmPassword }),
+      });
+
+      const contentType = response.headers.get("content-type");
+
+      // Check if response is JSON
+      if (!contentType || !contentType.includes("application/json")) {
+        setError("Błąd serwera. Spróbuj ponownie później.");
+        setIsLoading(false);
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Wystąpił błąd podczas rejestracji");
+        setIsLoading(false);
+        return;
+      }
+
+      // Success - show confirmation message
       setIsSuccess(true);
-      // Mock error
-      // setError("Użytkownik o tym adresie email już istnieje.");
-    }, 1000);
+    } catch (err) {
+      setError("Wystąpił błąd podczas rejestracji. Spróbuj ponownie.");
+      setIsLoading(false);
+    }
   };
 
   if (isSuccess) {
