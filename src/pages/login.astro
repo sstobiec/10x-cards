@@ -1,0 +1,10 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import LoginForm from "@/components/auth/LoginForm";
+---
+
+<Layout title="Logowanie - 10x Cards">
+  <main class="flex-grow">
+    <LoginForm client:load />
+  </main>
+</Layout>

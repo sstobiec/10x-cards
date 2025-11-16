@@ -12,3 +12,5 @@ alter table flashcard_sets disable row level security;
 alter table flashcards disable row level security;
 alter table error_logs disable row level security;
 
+
+

@@ -20,7 +20,7 @@ import {
   FlashcardSetNameConflictError,
   FlashcardSetTransactionError,
 } from "../../../lib/flashcard-set.service";
-import { DEFAULT_USER_ID } from "../../../db/supabase.client";
+import { createSupabaseServerInstance } from "../../../db/supabase.client";
 
 // Disable pre-rendering for this API route
 export const prerender = false;
@@ -45,27 +45,31 @@ const CreateFlashcardSetRequestSchema = z.object({
 /**
  * POST handler for creating flashcard sets
  */
-export const POST: APIRoute = async ({ request, locals }) => {
-  // Get Supabase client from locals (provided by middleware)
-  const supabase = locals.supabase;
-  if (!supabase) {
+export const POST: APIRoute = async ({ request, locals, cookies }) => {
+  // Get user from locals (set by middleware after authentication)
+  const user = locals.user;
+  if (!user) {
     return new Response(
       JSON.stringify({
         error: {
-          code: "INTERNAL_ERROR",
-          message: "Database client not available",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
         },
       } satisfies ErrorResponseDTO),
       {
-        status: 500,
+        status: 401,
         headers: { "Content-Type": "application/json" },
       }
     );
   }
 
-  // TODO: Once authentication is implemented, get user ID from session
-  // For now, using DEFAULT_USER_ID from supabase.client.ts
-  const userId = DEFAULT_USER_ID;
+  const userId = user.id;
+
+  // Create Supabase client instance
+  const supabase = createSupabaseServerInstance({
+    cookies,
+    headers: request.headers,
+  });
 
   // Parse request body
   let requestBody: unknown;

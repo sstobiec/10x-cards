@@ -43,19 +43,34 @@ Głównym problemem, który rozwiązuje 10xCards, jest czasochłonność i wysi�
 
 - ID: US-001
 - Tytuł: Rejestracja nowego użytkownika
-- Opis: Jako nowy użytkownik, chcę móc założyć konto za pomocą nazwy użytkownika i hasła, aby móc zapisywać swoje zestawy fiszek.
+- Opis: Jako nowy użytkownik, chcę móc założyć konto za pomocą adresu email i hasła, aby móc zapisywać swoje zestawy fiszek.
 - Kryteria akceptacji:
-  - Formularz rejestracji zawiera pola na nazwę użytkownika i hasło.
-  - System waliduje, czy nazwa użytkownika nie jest już zajęta.
+  - Formularz rejestracji zawiera pola na nazwę użytkownika, adres email i hasło.
+  - System waliduje, czy nazwa użytkownika i adres email nie są już zajęte.
+  - System waliduje poprawność formatu adresu email.
   - Po pomyślnej rejestracji jestem automatycznie zalogowany i przekierowany do pulpitu głównego.
 
 - ID: US-002
 - Tytuł: Logowanie do aplikacji
 - Opis: Jako zarejestrowany użytkownik, chcę móc zalogować się na swoje konto, aby uzyskać dostęp do moich zestawów fiszek.
 - Kryteria akceptacji:
-  - Formularz logowania zawiera pola na nazwę użytkownika i hasło.
+  - Formularz logowania zawiera pola na email i hasło.
+  - Użytkownik może zalogować się używając adresu email.
   - Po pomyślnym zalogowaniu jestem przekierowany do pulpitu z moimi zestawami.
   - W przypadku błędnych danych logowania wyświetlany jest odpowiedni komunikat.
+
+- ID: US-015
+- Tytuł: Bezpieczny dostęp
+- Opis: Jako użytkownik chcę mieć możliwość logowania się do systemu w sposób zapewniający bezpieczeństwo moich danych oraz wygenerowanych zestawów fiszek.
+- Kryteria akceptacji:
+  - Użytkownik musi być zalogowany, żeby korzystać z systemu.
+  - Niezalogowani użytkownicy są automatycznie przekierowani do strony logowania przy próbie dostępu do chronionych zasobów.
+  - Użytkownik może logować się do systemu poprzez przycisk w prawym górnym rogu.
+  - Użytkownik może się wylogować z systemu poprzez przycisk w prawym górnym rogu.
+  - Logowanie i Rejestracja odbywa się na dedykowanych stronach.
+  - Sesja użytkownika jest utrzymywana między wizytami (użytkownik nie musi logować się za każdym razem).
+  - Każdy użytkownik ma dostęp wyłącznie do swoich zestawów fiszek i danych.
+  - Odzyskiwanie hasła jest możliwe poprzez link wysłany na adres email.
 
 ### Generowanie Fiszki przez AI
 
