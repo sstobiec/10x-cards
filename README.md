@@ -27,6 +27,7 @@ The project is built with a modern tech stack:
 | **Frontend**          | Astro 5, React 19, TypeScript 5, Tailwind CSS 4, shadcn/ui     |
 | **Backend & Database**| Supabase                                                       |
 | **AI Integration**    | OpenRouter.ai                                                  |
+| **Testing**           | Vitest, React Testing Library, Playwright, MSW                 |
 | **CI/CD & Hosting**   | GitHub Actions, DigitalOcean                                   |
 
 ## Getting Started Locally
@@ -84,6 +85,8 @@ This project includes the following scripts defined in `package.json`:
 - `npm run lint`: Lints the codebase for errors.
 - `npm run lint:fix`: Lints and automatically fixes issues.
 - `npm run format`: Formats the code using Prettier.
+- `npm run test`: Runs unit and integration tests with Vitest.
+- `npm run test:e2e`: Runs end-to-end tests with Playwright.
 
 ## Project Scope
 

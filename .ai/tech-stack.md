@@ -12,6 +12,13 @@ Backend i bazydanych:
 AI - Komunikacja z modelami: 
 Openrouter.ai:
 
+Testowanie:
+- Vitest (testy jednostkowe i integracyjne)
+- React Testing Library (testy komponentów)
+- Playwright (testy E2E)
+- MSW - Mock Service Worker (mockowanie API)
+- Supabase CLI (lokalna instancja bazy danych dla testów)
+
 CI/CD i Hosting:
 - Github Actions
 - DigitalOcean
