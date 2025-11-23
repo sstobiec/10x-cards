@@ -1,6 +1,7 @@
 import { renderHook, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useGeneration } from "@/components/views/hooks/useGeneration";
+import type { GenerateFlashcardsResponseDTO } from "@/types";
 
 // Mock global fetch
 const mockFetch = vi.fn();
@@ -13,6 +14,33 @@ Object.defineProperty(global, "crypto", {
   },
   writable: true,
 });
+
+const createGenerateResponse = (overrides?: Partial<GenerateFlashcardsResponseDTO>): GenerateFlashcardsResponseDTO => ({
+  flashcard_proposals: overrides?.flashcard_proposals ?? [{ avers: "Question 1", rewers: "Answer 1" }],
+  model: overrides?.model ?? "gpt-4o",
+  generation_duration: overrides?.generation_duration ?? 1500,
+});
+
+const setupReviewState = async (responseOverrides?: Partial<GenerateFlashcardsResponseDTO>) => {
+  const mockGenerateResponse = createGenerateResponse(responseOverrides);
+
+  mockFetch.mockResolvedValueOnce({
+    ok: true,
+    json: async () => mockGenerateResponse,
+  });
+
+  const hook = renderHook(() => useGeneration());
+
+  await act(async () => {
+    hook.result.current.setText("Source text");
+  });
+
+  await act(async () => {
+    await hook.result.current.generateProposals();
+  });
+
+  return { result: hook.result, generateResponse: mockGenerateResponse };
+};
 
 describe("useGeneration", () => {
   beforeEach(() => {
@@ -189,33 +217,6 @@ describe("useGeneration", () => {
   });
 
   describe("saveFlashcardSet", () => {
-    const createGenerateResponse = () => ({
-      flashcard_proposals: [{ avers: "Question 1", rewers: "Answer 1" }],
-      model: "gpt-4o",
-      generation_duration: 1500,
-    });
-
-    const setupReviewState = async () => {
-      const mockGenerateResponse = createGenerateResponse();
-
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockGenerateResponse,
-      });
-
-      const hook = renderHook(() => useGeneration());
-
-      await act(async () => {
-        hook.result.current.setText("Source text");
-      });
-
-      await act(async () => {
-        await hook.result.current.generateProposals();
-      });
-
-      return { result: hook.result, generateResponse: mockGenerateResponse };
-    };
-
     it("should set error when set name is empty or whitespace", async () => {
       const { result } = renderHook(() => useGeneration());
 
@@ -376,6 +377,98 @@ describe("useGeneration", () => {
         message: "Server exploded",
       });
       expect(result.current.savedSetInfo).toBeNull();
+    });
+  });
+
+  describe("updateProposal", () => {
+    it("updates proposal content and marks it as ai-edited", async () => {
+      const { result } = await setupReviewState();
+      const targetProposal = result.current.proposals[0];
+
+      act(() => {
+        result.current.updateProposal(targetProposal.id, "Nowy awers", "Nowy rewers");
+      });
+
+      const updatedProposal = result.current.proposals[0];
+
+      expect(updatedProposal).toEqual(
+        expect.objectContaining({
+          id: targetProposal.id,
+          avers: "Nowy awers",
+          rewers: "Nowy rewers",
+          source: "ai-edited",
+          isFlagged: false,
+        })
+      );
+    });
+
+    it("updates only the targeted proposal and preserves others", async () => {
+      const { result } = await setupReviewState({
+        flashcard_proposals: [
+          { avers: "Question 1", rewers: "Answer 1" },
+          { avers: "Question 2", rewers: "Answer 2" },
+        ],
+      });
+
+      const firstProposalBefore = result.current.proposals[0];
+      const secondProposalBefore = result.current.proposals[1];
+
+      act(() => {
+        result.current.updateProposal(secondProposalBefore.id, "Zmieniony awers", "Zmieniony rewers");
+      });
+
+      expect(result.current.proposals[0]).toBe(firstProposalBefore);
+
+      const secondProposalAfter = result.current.proposals[1];
+      expect(secondProposalAfter).not.toBe(secondProposalBefore);
+      expect(secondProposalAfter).toEqual(
+        expect.objectContaining({
+          id: secondProposalBefore.id,
+          avers: "Zmieniony awers",
+          rewers: "Zmieniony rewers",
+          source: "ai-edited",
+        })
+      );
+    });
+
+    it("retains the flagged status when editing a proposal", async () => {
+      const { result } = await setupReviewState();
+      const targetProposal = result.current.proposals[0];
+
+      act(() => {
+        result.current.toggleFlag(targetProposal.id);
+      });
+
+      act(() => {
+        result.current.updateProposal(targetProposal.id, "Edytowany awers", "Edytowany rewers");
+      });
+
+      const updatedProposal = result.current.proposals[0];
+
+      expect(updatedProposal.isFlagged).toBe(true);
+      expect(updatedProposal.source).toBe("ai-edited");
+    });
+
+    it("does nothing when provided id is not found", async () => {
+      const { result } = await setupReviewState();
+      const originalProposal = result.current.proposals[0];
+
+      act(() => {
+        result.current.updateProposal("non-existent-id", "Edytowany awers", "Edytowany rewers");
+      });
+
+      expect(result.current.proposals[0]).toBe(originalProposal);
+      expect(result.current.proposals[0].source).toBe("ai-full");
+    });
+
+    it("ignores updates when there are no proposals", () => {
+      const { result } = renderHook(() => useGeneration());
+
+      act(() => {
+        result.current.updateProposal("any-id", "Pytanie", "Odpowiedź");
+      });
+
+      expect(result.current.proposals).toEqual([]);
     });
   });
 });
