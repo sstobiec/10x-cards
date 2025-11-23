@@ -605,4 +605,97 @@ describe("useGeneration", () => {
       expect(result.current.proposals).toEqual([]);
     });
   });
+
+  describe("reset", () => {
+    it("restores the initial state after a successful save flow", async () => {
+      const { result, generateResponse } = await setupReviewState();
+
+      const mockSaveResponse = {
+        id: "set-reset-1",
+        name: "Historia Reset",
+        flashcard_count: result.current.proposals.length,
+        model: generateResponse.model,
+        generation_duration: generateResponse.generation_duration,
+        created_at: "2024-02-01T10:00:00.000Z",
+      };
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockSaveResponse,
+      });
+
+      act(() => {
+        result.current.setSetName("Historia Reset");
+      });
+
+      await act(async () => {
+        await result.current.saveFlashcardSet();
+      });
+
+      expect(result.current.state).toBe("success");
+      expect(result.current.savedSetInfo).toEqual(mockSaveResponse);
+
+      act(() => {
+        result.current.reset();
+      });
+
+      expect(result.current.state).toBe("idle");
+      expect(result.current.text).toBe("");
+      expect(result.current.setName).toBe("");
+      expect(result.current.proposals).toEqual([]);
+      expect(result.current.error).toBeNull();
+      expect(result.current.savedSetInfo).toBeNull();
+    });
+
+    it("clears error state, text input, and pending set name", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        json: async () => ({ error: { message: "Server exploded" } }),
+      });
+
+      const { result } = renderHook(() => useGeneration());
+
+      await act(async () => {
+        result.current.setText("Notatki użytkownika");
+      });
+
+      await act(async () => {
+        await result.current.generateProposals();
+      });
+
+      expect(result.current.state).toBe("error");
+      expect(result.current.error).toEqual({
+        title: "Błąd generowania",
+        message: "Server exploded",
+      });
+
+      act(() => {
+        result.current.setSetName("Próba nazwy");
+        result.current.reset();
+      });
+
+      expect(result.current.state).toBe("idle");
+      expect(result.current.error).toBeNull();
+      expect(result.current.text).toBe("");
+      expect(result.current.setName).toBe("");
+      expect(result.current.proposals).toEqual([]);
+    });
+
+    it("is idempotent when invoked multiple times from the idle state", () => {
+      const { result } = renderHook(() => useGeneration());
+
+      act(() => {
+        result.current.reset();
+        result.current.reset();
+      });
+
+      expect(result.current.state).toBe("idle");
+      expect(result.current.text).toBe("");
+      expect(result.current.setName).toBe("");
+      expect(result.current.proposals).toEqual([]);
+      expect(result.current.error).toBeNull();
+      expect(result.current.savedSetInfo).toBeNull();
+    });
+  });
 });
