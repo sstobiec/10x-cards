@@ -532,4 +532,77 @@ describe("useGeneration", () => {
       expect(result.current.proposals).toEqual([]);
     });
   });
+
+  describe("toggleFlag", () => {
+    it("sets isFlagged to true for the targeted proposal", async () => {
+      const { result } = await setupReviewState();
+      const targetId = result.current.proposals[0].id;
+
+      act(() => {
+        result.current.toggleFlag(targetId);
+      });
+
+      expect(result.current.proposals[0].isFlagged).toBe(true);
+    });
+
+    it("toggles the flag back to false when invoked twice", async () => {
+      const { result } = await setupReviewState();
+      const targetId = result.current.proposals[0].id;
+
+      act(() => {
+        result.current.toggleFlag(targetId);
+        result.current.toggleFlag(targetId);
+      });
+
+      expect(result.current.proposals[0].isFlagged).toBe(false);
+    });
+
+    it("does not affect other proposals", async () => {
+      const { result } = await setupReviewState({
+        flashcard_proposals: [
+          { avers: "Question 1", rewers: "Answer 1" },
+          { avers: "Question 2", rewers: "Answer 2" },
+        ],
+      });
+
+      const [firstBefore, secondBefore] = result.current.proposals;
+
+      act(() => {
+        result.current.toggleFlag(secondBefore.id);
+      });
+
+      expect(result.current.proposals[0]).toBe(firstBefore);
+      expect(result.current.proposals[1]).not.toBe(secondBefore);
+      expect(result.current.proposals[1]).toEqual(
+        expect.objectContaining({
+          id: secondBefore.id,
+          isFlagged: true,
+        })
+      );
+    });
+
+    it("does nothing when id is not found", async () => {
+      const { result } = await setupReviewState();
+      const proposalSnapshot = [...result.current.proposals];
+
+      act(() => {
+        result.current.toggleFlag("missing-id");
+      });
+
+      expect(result.current.proposals).toHaveLength(proposalSnapshot.length);
+      proposalSnapshot.forEach((proposal, index) => {
+        expect(result.current.proposals[index]).toBe(proposal);
+      });
+    });
+
+    it("ignores toggle calls when there are no proposals", () => {
+      const { result } = renderHook(() => useGeneration());
+
+      act(() => {
+        result.current.toggleFlag("any-id");
+      });
+
+      expect(result.current.proposals).toEqual([]);
+    });
+  });
 });
