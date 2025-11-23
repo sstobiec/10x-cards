@@ -471,4 +471,65 @@ describe("useGeneration", () => {
       expect(result.current.proposals).toEqual([]);
     });
   });
+
+  describe("deleteProposal", () => {
+    it("removes the targeted proposal and preserves others", async () => {
+      const { result } = await setupReviewState({
+        flashcard_proposals: [
+          { avers: "Question 1", rewers: "Answer 1" },
+          { avers: "Question 2", rewers: "Answer 2" },
+        ],
+      });
+
+      const firstProposalId = result.current.proposals[0].id;
+      const secondProposalId = result.current.proposals[1].id;
+
+      act(() => {
+        result.current.deleteProposal(firstProposalId);
+      });
+
+      expect(result.current.proposals).toHaveLength(1);
+      expect(result.current.proposals[0].id).toBe(secondProposalId);
+    });
+
+    it("allows removing the last remaining proposal", async () => {
+      const { result } = await setupReviewState();
+      const onlyProposalId = result.current.proposals[0].id;
+
+      act(() => {
+        result.current.deleteProposal(onlyProposalId);
+      });
+
+      expect(result.current.proposals).toEqual([]);
+    });
+
+    it("keeps proposals unchanged when id is not found", async () => {
+      const { result } = await setupReviewState({
+        flashcard_proposals: [
+          { avers: "Question 1", rewers: "Answer 1" },
+          { avers: "Question 2", rewers: "Answer 2" },
+        ],
+      });
+
+      const beforeDelete = result.current.proposals;
+
+      act(() => {
+        result.current.deleteProposal("missing-id");
+      });
+
+      expect(result.current.proposals).toHaveLength(beforeDelete.length);
+      expect(result.current.proposals[0]).toBe(beforeDelete[0]);
+      expect(result.current.proposals[1]).toBe(beforeDelete[1]);
+    });
+
+    it("ignores delete calls when there are no proposals", () => {
+      const { result } = renderHook(() => useGeneration());
+
+      act(() => {
+        result.current.deleteProposal("any-id");
+      });
+
+      expect(result.current.proposals).toEqual([]);
+    });
+  });
 });
