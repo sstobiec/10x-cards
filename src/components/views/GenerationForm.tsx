@@ -45,6 +45,7 @@ export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: Ge
               "text-destructive": isOverLimit,
             })}
             aria-live="polite"
+            data-testid="character-counter"
           >
             {characterCount.toLocaleString("pl-PL")} / {MAX_CHARACTERS.toLocaleString("pl-PL")}
           </span>
@@ -61,6 +62,7 @@ export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: Ge
           disabled={isLoading}
           aria-invalid={isOverLimit}
           aria-describedby="character-count-description"
+          data-testid="generation-text-input"
         />
 
         {isOverLimit && (
@@ -78,6 +80,7 @@ export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: Ge
           disabled={!isValid || isLoading}
           className="min-w-[200px]"
           aria-busy={isLoading}
+          data-testid="generate-flashcards-button"
         >
           {isLoading ? (
             <>

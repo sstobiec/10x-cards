@@ -15,7 +15,7 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
   return (
     <div className="container py-12">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-8 text-center">
+        <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-8 text-center" data-testid="success-display">
           {/* Success Icon */}
           <div className="flex justify-center mb-4">
             <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-3">
@@ -87,7 +87,7 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild variant="default" size="lg">
-              <a href={`/sets/${savedSetInfo.id}`}>
+              <a href={`/sets/${savedSetInfo.id}`} data-testid="start-learning-button">
                 <svg
                   className="h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +107,7 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
               </a>
             </Button>
 
-            <Button onClick={onReset} variant="outline" size="lg">
+            <Button onClick={onReset} variant="outline" size="lg" data-testid="generate-another-set-button">
               <svg
                 className="h-5 w-5"
                 xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +127,7 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
             </Button>
 
             <Button asChild variant="ghost" size="lg">
-              <a href="/sets">
+              <a href="/sets" data-testid="view-all-sets-button">
                 <svg
                   className="h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"

@@ -16,7 +16,11 @@ export function ErrorDisplay({ error, onRetry, onReset }: ErrorDisplayProps) {
   return (
     <div className="container py-12">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-8 text-center" role="alert">
+        <div
+          className="bg-destructive/10 border border-destructive/20 rounded-lg p-8 text-center"
+          role="alert"
+          data-testid="error-display"
+        >
           {/* Error Icon */}
           <div className="flex justify-center mb-4">
             <svg
@@ -57,12 +61,12 @@ export function ErrorDisplay({ error, onRetry, onReset }: ErrorDisplayProps) {
           {/* Action Buttons */}
           <div className="flex gap-3 justify-center">
             {onRetry && (
-              <Button onClick={onRetry} variant="default">
+              <Button onClick={onRetry} variant="default" data-testid="retry-button">
                 Spróbuj ponownie
               </Button>
             )}
             {onReset && (
-              <Button onClick={onReset} variant="outline">
+              <Button onClick={onReset} variant="outline" data-testid="reset-button">
                 Zacznij od nowa
               </Button>
             )}
@@ -72,4 +76,3 @@ export function ErrorDisplay({ error, onRetry, onReset }: ErrorDisplayProps) {
     </div>
   );
 }
-

@@ -11,40 +11,25 @@ interface AuthFormProps {
   footerContent?: React.ReactNode;
 }
 
-export function AuthForm({
-  title,
-  children,
-  buttonText,
-  onSubmit,
-  isLoading,
-  error,
-  footerContent,
-}: AuthFormProps) {
+export function AuthForm({ title, children, buttonText, onSubmit, isLoading, error, footerContent }: AuthFormProps) {
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-foreground">
-          {title}
-        </h2>
+        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-foreground">{title}</h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form onSubmit={onSubmit} className="space-y-6">
+        <form onSubmit={onSubmit} className="space-y-6" data-testid="auth-form">
           {children}
 
           {error && (
-            <p className="text-sm text-destructive text-center" role="alert">
+            <p className="text-sm text-destructive text-center" role="alert" data-testid="auth-error-message">
               {error}
             </p>
           )}
 
           <div>
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="flex w-full justify-center"
-              aria-busy={isLoading}
-            >
+            <Button type="submit" disabled={isLoading} className="flex w-full justify-center" aria-busy={isLoading} data-testid="auth-submit-button">
               {isLoading ? (
                 <>
                   <svg

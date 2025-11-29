@@ -10,6 +10,8 @@ tests/
 ├── unit/            # Testy jednostkowe
 ├── integration/     # Testy integracyjne
 ├── e2e/             # Testy End-to-End (Playwright)
+│   ├── pages/       # Page Object Model classes
+│   └── *.spec.ts    # Specyfikacje testów E2E
 ├── mocks/           # Mock Service Worker (MSW) handlers
 └── README.md        # Ten plik
 ```
@@ -109,6 +111,8 @@ describe('ComponentName', () => {
 
 ## Struktura testów E2E
 
+### Podstawowa struktura
+
 ```typescript
 import { test, expect } from '@playwright/test';
 
@@ -122,6 +126,52 @@ test.describe('Feature Name', () => {
   });
 });
 ```
+
+### Użycie Page Object Model
+
+```typescript
+import { test, expect } from '@playwright/test';
+import { GenerationPage, ReviewPage, SuccessPage } from './pages';
+
+test.describe('Flashcard Generation Flow', () => {
+  let generationPage: GenerationPage;
+  let reviewPage: ReviewPage;
+  let successPage: SuccessPage;
+
+  test.beforeEach(async ({ page }) => {
+    // Initialize page objects
+    generationPage = new GenerationPage(page);
+    reviewPage = new ReviewPage(page);
+    successPage = new SuccessPage(page);
+    
+    // Navigate to starting page
+    await generationPage.goto();
+  });
+
+  test('should complete full flow', async () => {
+    // Step 1: Generate flashcards
+    await generationPage.generateFlashcards("Sample notes...");
+    
+    // Step 2: Review and save
+    await reviewPage.saveFlashcardSet("My Set");
+    
+    // Step 3: Verify success
+    await successPage.waitForSuccess();
+    expect(await successPage.isVisible()).toBe(true);
+  });
+});
+```
+
+### Page Object Model Classes
+
+Projekt wykorzystuje wzorzec Page Object Model (POM) dla lepszej maintainability testów E2E. Wszystkie klasy POM znajdują się w `tests/e2e/pages/`:
+
+- **GenerationPage** - Strona generowania fiszek
+- **ReviewPage** - Strona przeglądu i edycji propozycji
+- **SuccessPage** - Strona potwierdzenia sukcesu
+- **ErrorPage** - Strona obsługi błędów
+
+Szczegółowa dokumentacja klas POM znajduje się w `tests/e2e/pages/README.md`.
 
 ## Mockowanie API z MSW
 
@@ -154,12 +204,15 @@ export const handlers = [
 
 ### Playwright
 
-- Używaj Page Object Model dla skalowalności
-- Preferuj lokatory według ról i tekstu
-- Używaj browser contexts do izolacji testów
-- Wykorzystuj narzędzie codegen do generowania testów
-- Używaj trace viewer do debugowania
-- Implementuj odpowiednie hooks (beforeEach, afterEach)
+- **Używaj Page Object Model** - Wszystkie interakcje z UI powinny być enkapsulowane w klasach POM
+- **Preferuj data-testid** - Używaj `data-testid` dla stabilnych selektorów niezależnych od zmian UI
+- **Lokatory według ról** - Gdy to możliwe, używaj selektorów semantycznych (`getByRole`, `getByLabel`)
+- **Browser contexts** - Wykorzystuj konteksty do izolacji testów
+- **Codegen tool** - Używaj `npx playwright codegen` do generowania podstawowych testów
+- **Trace viewer** - Analizuj błędy za pomocą `npx playwright show-trace`
+- **Hooks dla setup** - Implementuj `beforeEach` do inicjalizacji obiektów stron
+- **Wait strategies** - Wykorzystuj wbudowane mechanizmy oczekiwania Playwright
+- **Parallel execution** - Testy są uruchamiane równolegle dla szybszych wyników
 
 ## Pokrycie kodu
 

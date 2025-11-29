@@ -70,6 +70,7 @@ export function FlashcardProposalItem({ proposal, onUpdate, onDelete, onToggleFl
           "border rounded-lg p-4 sm:p-6 bg-card transition-all",
           proposal.isFlagged && "border-amber-500/50 bg-amber-50/50 dark:bg-amber-950/20"
         )}
+        data-testid="flashcard-proposal-item"
       >
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4">
           <div className="flex items-center gap-2 flex-wrap">
@@ -86,7 +87,7 @@ export function FlashcardProposalItem({ proposal, onUpdate, onDelete, onToggleFl
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <Button onClick={handleEdit} variant="outline" size="sm">
+            <Button onClick={handleEdit} variant="outline" size="sm" data-testid="edit-flashcard-button">
               <svg
                 className="h-4 w-4"
                 xmlns="http://www.w3.org/2000/svg"
@@ -109,6 +110,7 @@ export function FlashcardProposalItem({ proposal, onUpdate, onDelete, onToggleFl
               variant={proposal.isFlagged ? "default" : "outline"}
               size="sm"
               title={proposal.isFlagged ? "Usuń flagę" : "Oflaguj jako słabą jakość"}
+              data-testid="flag-flashcard-button"
             >
               <svg
                 className="h-4 w-4"
@@ -126,7 +128,7 @@ export function FlashcardProposalItem({ proposal, onUpdate, onDelete, onToggleFl
               </svg>
             </Button>
 
-            <Button onClick={handleDelete} variant="destructive" size="sm">
+            <Button onClick={handleDelete} variant="destructive" size="sm" data-testid="delete-flashcard-button">
               <svg
                 className="h-4 w-4"
                 xmlns="http://www.w3.org/2000/svg"
@@ -149,12 +151,12 @@ export function FlashcardProposalItem({ proposal, onUpdate, onDelete, onToggleFl
         <div className="space-y-4">
           <div>
             <h4 className="text-sm font-semibold text-muted-foreground mb-2">Awers (Pytanie)</h4>
-            <p className="text-base text-foreground">{proposal.avers}</p>
+            <p className="text-base text-foreground" data-testid="flashcard-avers">{proposal.avers}</p>
           </div>
 
           <div>
             <h4 className="text-sm font-semibold text-muted-foreground mb-2">Rewers (Odpowiedź)</h4>
-            <p className="text-base text-foreground whitespace-pre-wrap">{proposal.rewers}</p>
+            <p className="text-base text-foreground whitespace-pre-wrap" data-testid="flashcard-rewers">{proposal.rewers}</p>
           </div>
         </div>
       </div>
@@ -166,12 +168,12 @@ export function FlashcardProposalItem({ proposal, onUpdate, onDelete, onToggleFl
   // ============================================================================
 
   return (
-    <div className="border-2 border-primary rounded-lg p-4 sm:p-6 bg-card">
+    <div className="border-2 border-primary rounded-lg p-4 sm:p-6 bg-card" data-testid="flashcard-proposal-item">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4">
         <span className="text-sm font-medium text-primary">Tryb edycji</span>
 
         <div className="flex items-center gap-2 flex-wrap">
-          <Button onClick={handleSave} variant="default" size="sm" disabled={!isValid}>
+          <Button onClick={handleSave} variant="default" size="sm" disabled={!isValid} data-testid="save-edit-flashcard-button">
             <svg
               className="h-4 w-4"
               xmlns="http://www.w3.org/2000/svg"
@@ -184,7 +186,7 @@ export function FlashcardProposalItem({ proposal, onUpdate, onDelete, onToggleFl
             Zapisz
           </Button>
 
-          <Button onClick={handleCancel} variant="outline" size="sm">
+          <Button onClick={handleCancel} variant="outline" size="sm" data-testid="cancel-edit-flashcard-button">
             Anuluj
           </Button>
         </div>
@@ -213,6 +215,7 @@ export function FlashcardProposalItem({ proposal, onUpdate, onDelete, onToggleFl
               "border-destructive focus-visible:ring-destructive/20": !isAversValid,
             })}
             aria-invalid={!isAversValid}
+            data-testid="edit-flashcard-avers-input"
           />
           {!isAversValid && (
             <p className="text-xs text-destructive mt-1">
@@ -245,6 +248,7 @@ export function FlashcardProposalItem({ proposal, onUpdate, onDelete, onToggleFl
               "border-destructive focus-visible:ring-destructive/20": !isRewersValid,
             })}
             aria-invalid={!isRewersValid}
+            data-testid="edit-flashcard-rewers-input"
           />
           {!isRewersValid && (
             <p className="text-xs text-destructive mt-1">

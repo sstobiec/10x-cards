@@ -84,6 +84,7 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
+            data-testid="login-email-input"
           />
         </div>
       </div>
@@ -109,6 +110,7 @@ export default function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
+            data-testid="login-password-input"
           />
         </div>
       </div>

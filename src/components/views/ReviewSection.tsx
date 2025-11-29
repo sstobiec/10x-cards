@@ -87,6 +87,7 @@ export function ReviewSection({
                   disabled={isSaving}
                   aria-invalid={!isSetNameValid && setName.length > 0}
                   aria-describedby="set-name-description"
+                  data-testid="set-name-input"
                 />
                 {!isSetNameValid && setName.length > 0 && (
                   <p id="set-name-description" className="text-sm text-destructive mt-1" role="alert">
@@ -97,7 +98,7 @@ export function ReviewSection({
                 )}
               </div>
 
-              <Button type="submit" size="lg" disabled={!canSave} className="w-full" aria-busy={isSaving}>
+              <Button type="submit" size="lg" disabled={!canSave} className="w-full" aria-busy={isSaving} data-testid="save-flashcard-set-button">
                 {isSaving ? (
                   <>
                     <svg
