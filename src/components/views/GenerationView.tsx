@@ -64,10 +64,10 @@ export function GenerationView() {
   // State: idle
   if (state === "idle") {
     return (
-      <div className="container py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight mb-4">Generuj fiszki z AI</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+      <div className="container px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-4">Generuj fiszki z AI</h1>
+          <p className="text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto">
             Wklej swoje notatki, a sztuczna inteligencja automatycznie wygeneruje dla Ciebie fiszki do nauki.
           </p>
         </div>
@@ -85,9 +85,9 @@ export function GenerationView() {
   // State: generating
   if (state === "generating") {
     return (
-      <div className="container py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight mb-4">Generuj fiszki z AI</h1>
+      <div className="container px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-4">Generuj fiszki z AI</h1>
         </div>
         <LoadingSpinner message="Generowanie fiszek za pomocą AI..." />
       </div>
@@ -113,9 +113,9 @@ export function GenerationView() {
   // State: saving
   if (state === "saving") {
     return (
-      <div className="container py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight mb-4">Zapisywanie zestawu</h1>
+      <div className="container px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-4">Zapisywanie zestawu</h1>
         </div>
         <LoadingSpinner message="Zapisywanie zestawu fiszek..." />
       </div>
@@ -129,9 +129,9 @@ export function GenerationView() {
 
   // Fallback (should not be reached in normal flow)
   return (
-    <div className="container py-12">
+    <div className="container px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
       <div className="text-center">
-        <h2 className="text-2xl font-bold">Nieoczekiwany stan</h2>
+        <h2 className="text-xl sm:text-2xl font-bold">Nieoczekiwany stan</h2>
         <p className="text-muted-foreground mt-2 mb-4">Wystąpił nieoczekiwany błąd.</p>
         <button onClick={reset} className="text-primary hover:underline">
           Wróć do początku

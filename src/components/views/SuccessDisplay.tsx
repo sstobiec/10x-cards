@@ -13,14 +13,14 @@ interface SuccessDisplayProps {
  */
 export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
   return (
-    <div className="container py-12">
+    <div className="container px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-8 text-center" data-testid="success-display">
+        <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-4 sm:p-6 lg:p-8 text-center" data-testid="success-display">
           {/* Success Icon */}
           <div className="flex justify-center mb-4">
-            <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-3">
+            <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-2 sm:p-3">
               <svg
-                className="h-16 w-16 text-green-600 dark:text-green-400"
+                className="h-12 w-12 sm:h-16 sm:w-16 text-green-600 dark:text-green-400"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -33,7 +33,7 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
           </div>
 
           {/* Success Title */}
-          <h2 className="text-3xl font-bold text-green-900 dark:text-green-100 mb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-green-900 dark:text-green-100 mb-2">
             Zestaw zapisany!
           </h2>
 
@@ -43,7 +43,7 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
           </p>
 
           {/* Set Details */}
-          <div className="bg-white dark:bg-gray-900 rounded-lg p-6 mb-6 text-left border border-green-200 dark:border-green-800">
+          <div className="bg-white dark:bg-gray-900 rounded-lg p-4 sm:p-6 mb-6 text-left border border-green-200 dark:border-green-800">
             <h3 className="text-lg font-semibold text-foreground mb-4">Szczegóły zestawu</h3>
             
             <dl className="space-y-3">

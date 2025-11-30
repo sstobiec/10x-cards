@@ -14,17 +14,17 @@ interface ErrorDisplayProps {
  */
 export function ErrorDisplay({ error, onRetry, onReset }: ErrorDisplayProps) {
   return (
-    <div className="container py-12">
+    <div className="container px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
       <div className="max-w-2xl mx-auto">
         <div
-          className="bg-destructive/10 border border-destructive/20 rounded-lg p-8 text-center"
+          className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 sm:p-6 lg:p-8 text-center"
           role="alert"
           data-testid="error-display"
         >
           {/* Error Icon */}
           <div className="flex justify-center mb-4">
             <svg
-              className="h-16 w-16 text-destructive"
+              className="h-12 w-12 sm:h-16 sm:w-16 text-destructive"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -41,7 +41,7 @@ export function ErrorDisplay({ error, onRetry, onReset }: ErrorDisplayProps) {
           </div>
 
           {/* Error Title */}
-          <h2 className="text-2xl font-bold text-destructive mb-2">{error.title}</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-destructive mb-2">{error.title}</h2>
 
           {/* Error Message */}
           <p className="text-base text-foreground/80 mb-6">{error.message}</p>
@@ -59,14 +59,14 @@ export function ErrorDisplay({ error, onRetry, onReset }: ErrorDisplayProps) {
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             {onRetry && (
-              <Button onClick={onRetry} variant="default" data-testid="retry-button">
+              <Button onClick={onRetry} variant="default" className="w-full sm:w-auto" data-testid="retry-button">
                 Spróbuj ponownie
               </Button>
             )}
             {onReset && (
-              <Button onClick={onReset} variant="outline" data-testid="reset-button">
+              <Button onClick={onReset} variant="outline" className="w-full sm:w-auto" data-testid="reset-button">
                 Zacznij od nowa
               </Button>
             )}

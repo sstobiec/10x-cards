@@ -46,19 +46,19 @@ export function ReviewSection({
   };
 
   return (
-    <div className="container py-12">
+    <div className="container px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold tracking-tight mb-4">Przejrzyj i edytuj fiszki</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-4">Przejrzyj i edytuj fiszki</h1>
+          <p className="text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto">
             Sprawdź wygenerowane fiszki, edytuj je w razie potrzeby i zapisz jako nowy zestaw do nauki.
           </p>
         </div>
 
         {/* Set Name Form */}
-        <form onSubmit={handleSubmit} className="mb-8">
-          <div className="bg-card border rounded-lg p-6">
+        <form onSubmit={handleSubmit} className="mb-6 sm:mb-8">
+          <div className="bg-card border rounded-lg p-4 sm:p-6">
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">

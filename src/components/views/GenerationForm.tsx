@@ -31,7 +31,7 @@ export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: Ge
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto space-y-6">
+    <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto space-y-4 lg:space-y-6">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <label htmlFor="input-text" className="text-sm font-medium text-foreground">
@@ -54,7 +54,7 @@ export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: Ge
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
           placeholder="Wklej tutaj swoje notatki, artykuł lub materiał do nauki. AI wygeneruje dla Ciebie fiszki do nauki..."
-          className={cn("min-h-[300px] resize-y", {
+          className={cn("min-h-[200px] sm:min-h-[300px] resize-y", {
             "border-destructive focus-visible:ring-destructive/20": isOverLimit,
           })}
           disabled={isLoading}
@@ -76,7 +76,7 @@ export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: Ge
           type="submit"
           size="lg"
           disabled={!isValid || isLoading}
-          className="min-w-[200px]"
+          className="w-full sm:w-auto sm:min-w-[200px]"
           aria-busy={isLoading}
           data-testid="generate-flashcards-button"
         >
