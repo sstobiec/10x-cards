@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { FlashcardProposalList } from "./FlashcardProposalList";
 import { cn } from "@/lib/utils";
 import type { FlashcardProposalViewModel } from "@/types";
+import { SET_NAME_MAX_LENGTH, isSetNameValid as validateSetName } from "@/lib/validation/generation.validation";
 
 interface ReviewSectionProps {
   proposals: FlashcardProposalViewModel[];
@@ -14,8 +15,6 @@ interface ReviewSectionProps {
   onToggleFlag: (id: string) => void;
   isSaving: boolean;
 }
-
-const MAX_SET_NAME_LENGTH = 100;
 
 /**
  * Review section for flashcard proposals
@@ -35,7 +34,7 @@ export function ReviewSection({
   onToggleFlag,
   isSaving,
 }: ReviewSectionProps) {
-  const isSetNameValid = setName.trim().length > 0 && setName.length <= MAX_SET_NAME_LENGTH;
+  const isSetNameValid = validateSetName(setName);
   const hasProposals = proposals.length > 0;
   const canSave = isSetNameValid && hasProposals && !isSaving;
 
@@ -73,7 +72,7 @@ export function ReviewSection({
                     })}
                     aria-live="polite"
                   >
-                    {setName.length} / {MAX_SET_NAME_LENGTH}
+                    {setName.length} / {SET_NAME_MAX_LENGTH}
                   </span>
                 </div>
                 <Input
@@ -93,12 +92,19 @@ export function ReviewSection({
                   <p id="set-name-description" className="text-sm text-destructive mt-1" role="alert">
                     {setName.trim().length === 0
                       ? "Nazwa zestawu nie może być pusta"
-                      : `Przekroczono maksymalną długość ${MAX_SET_NAME_LENGTH} znaków`}
+                      : `Przekroczono maksymalną długość ${SET_NAME_MAX_LENGTH} znaków`}
                   </p>
                 )}
               </div>
 
-              <Button type="submit" size="lg" disabled={!canSave} className="w-full" aria-busy={isSaving} data-testid="save-flashcard-set-button">
+              <Button
+                type="submit"
+                size="lg"
+                disabled={!canSave}
+                className="w-full"
+                aria-busy={isSaving}
+                data-testid="save-flashcard-set-button"
+              >
                 {isSaving ? (
                   <>
                     <svg
@@ -160,4 +166,3 @@ export function ReviewSection({
     </div>
   );
 }
-

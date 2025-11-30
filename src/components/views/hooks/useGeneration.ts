@@ -1,41 +1,82 @@
-import { useState } from "react";
-import type {
-  GenerationViewState,
-  FlashcardProposalViewModel,
-  ApiError,
-  GenerateFlashcardsRequestDTO,
-  GenerateFlashcardsResponseDTO,
-  CreateFlashcardSetRequestDTO,
-  CreateFlashcardSetResponseDTO,
-} from "@/types";
-
 /**
- * Custom hook for managing the flashcard generation flow
+ * useGeneration Hook
+ *
+ * Custom hook for managing the flashcard generation flow.
  *
  * Handles state management for:
  * - User input text
- * - Generation state machine
+ * - Generation state machine (idle → generating → reviewing → saving → success)
  * - Flashcard proposals (review and edit)
  * - API calls to generate and save flashcards
  * - Error handling
+ *
+ * Refactored to use:
+ * - Extracted useFlashcardProposals hook for proposal management
+ * - Centralized API service for HTTP requests
+ * - Centralized validation schemas
+ */
+
+import { useState, useCallback } from "react";
+import type { GenerationViewState, ApiError, CreateFlashcardSetResponseDTO } from "@/types";
+import { useFlashcardProposals } from "./useFlashcardProposals";
+import {
+  generateFlashcards,
+  createFlashcardSet,
+  FlashcardGenerationApiError,
+} from "@/lib/api/flashcard-generation.api";
+import { validateGenerationText, validateSetName } from "@/lib/validation/generation.validation";
+
+// ============================================================================
+// Types
+// ============================================================================
+
+interface GenerationMetadata {
+  model: string;
+  generation_duration: number;
+}
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Creates a standardized API error object from various error types
+ */
+function createApiError(title: string, error: unknown): ApiError {
+  if (error instanceof FlashcardGenerationApiError) {
+    return { title, message: error.message };
+  }
+  return {
+    title,
+    message: error instanceof Error ? error.message : "Wystąpił nieoczekiwany błąd",
+  };
+}
+
+// ============================================================================
+// Hook
+// ============================================================================
+
+/**
+ * Custom hook for managing the flashcard generation flow
  */
 export function useGeneration() {
   // ============================================================================
-  // State
+  // Core State
   // ============================================================================
 
   const [state, setState] = useState<GenerationViewState>("idle");
-  const [text, setText] = useState<string>("");
-  const [setName, setSetName] = useState<string>("");
-  const [proposals, setProposals] = useState<FlashcardProposalViewModel[]>([]);
+  const [text, setText] = useState("");
+  const [setName, setSetName] = useState("");
   const [error, setError] = useState<ApiError | null>(null);
   const [savedSetInfo, setSavedSetInfo] = useState<CreateFlashcardSetResponseDTO | null>(null);
+  const [generationMetadata, setGenerationMetadata] = useState<GenerationMetadata | null>(null);
 
-  // Store generation metadata from API response
-  const [generationMetadata, setGenerationMetadata] = useState<{
-    model: string;
-    generation_duration: number;
-  } | null>(null);
+  // ============================================================================
+  // Proposal Management (Extracted Hook)
+  // ============================================================================
+
+  const { proposals, setProposalsFromApi, updateProposal, deleteProposal, toggleFlag, clearProposals } =
+    useFlashcardProposals();
 
   // ============================================================================
   // API Functions
@@ -44,9 +85,10 @@ export function useGeneration() {
   /**
    * Generates flashcard proposals from input text using AI
    */
-  const generateProposals = async () => {
-    // Validate input
-    if (!text.trim() || text.length > 10000) {
+  const generateProposals = useCallback(async () => {
+    // Validate input using centralized schema
+    const validation = validateGenerationText(text);
+    if (!validation.success) {
       setError({
         title: "Nieprawidłowe dane wejściowe",
         message: "Tekst nie może być pusty i nie może przekraczać 10 000 znaków.",
@@ -59,58 +101,30 @@ export function useGeneration() {
       setState("generating");
       setError(null);
 
-      const requestBody: GenerateFlashcardsRequestDTO = {
-        text: text.trim(),
-      };
+      // Call API service
+      const data = await generateFlashcards({ text: validation.data });
 
-      const response = await fetch("/api/flashcards/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error?.message || "Nie udało się wygenerować fiszek");
-      }
-
-      const data: GenerateFlashcardsResponseDTO = await response.json();
-
-      // Map API response to view models with unique IDs
-      const viewModels: FlashcardProposalViewModel[] = data.flashcard_proposals.map((proposal) => ({
-        id: crypto.randomUUID(),
-        avers: proposal.avers,
-        rewers: proposal.rewers,
-        source: "ai-full" as const,
-        isFlagged: false,
-      }));
-
-      // Store metadata for later use when saving
+      // Transform and store proposals
+      setProposalsFromApi(data.flashcard_proposals);
       setGenerationMetadata({
         model: data.model,
         generation_duration: data.generation_duration,
       });
-
-      setProposals(viewModels);
       setState("reviewing");
     } catch (err) {
       console.error("Error generating flashcards:", err);
-      setError({
-        title: "Błąd generowania",
-        message: err instanceof Error ? err.message : "Wystąpił nieoczekiwany błąd podczas generowania fiszek.",
-      });
+      setError(createApiError("Błąd generowania", err));
       setState("error");
     }
-  };
+  }, [text, setProposalsFromApi]);
 
   /**
    * Saves the flashcard set with all proposals
    */
-  const saveFlashcardSet = async () => {
-    // Validate set name
-    if (!setName.trim() || setName.length > 100) {
+  const saveFlashcardSet = useCallback(async () => {
+    // Validate set name using centralized schema
+    const nameValidation = validateSetName(setName);
+    if (!nameValidation.success) {
       setError({
         title: "Nieprawidłowa nazwa zestawu",
         message: "Nazwa zestawu nie może być pusta i nie może przekraczać 100 znaków.",
@@ -133,8 +147,9 @@ export function useGeneration() {
       setState("saving");
       setError(null);
 
-      const requestBody: CreateFlashcardSetRequestDTO = {
-        name: setName.trim(),
+      // Call API service
+      const data = await createFlashcardSet({
+        name: nameValidation.data,
         model: generationMetadata?.model || "unknown",
         generation_duration: generationMetadata?.generation_duration || 0,
         flashcards: proposals.map((proposal) => ({
@@ -143,88 +158,16 @@ export function useGeneration() {
           source: proposal.source,
           flagged: proposal.isFlagged,
         })),
-      };
-
-      const response = await fetch("/api/flashcard-sets", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        
-        // Handle specific error cases
-        if (response.status === 409) {
-          throw new Error("Zestaw o tej nazwie już istnieje.");
-        }
-        
-        throw new Error(errorData.error?.message || "Nie udało się zapisać zestawu");
-      }
-
-      const data: CreateFlashcardSetResponseDTO = await response.json();
 
       setSavedSetInfo(data);
       setState("success");
     } catch (err) {
       console.error("Error saving flashcard set:", err);
-      setError({
-        title: "Błąd zapisywania",
-        message: err instanceof Error ? err.message : "Wystąpił nieoczekiwany błąd podczas zapisywania zestawu.",
-      });
+      setError(createApiError("Błąd zapisywania", err));
       setState("error");
     }
-  };
-
-  // ============================================================================
-  // Proposal Manipulation Functions
-  // ============================================================================
-
-  /**
-   * Updates a proposal's content
-   */
-  const updateProposal = (id: string, avers: string, rewers: string) => {
-    setProposals((prev) =>
-      prev.map((proposal) => {
-        if (proposal.id === id) {
-          return {
-            ...proposal,
-            avers,
-            rewers,
-            // Mark as edited if content changed
-            source: "ai-edited" as const,
-          };
-        }
-        return proposal;
-      })
-    );
-  };
-
-  /**
-   * Deletes a proposal from the list
-   */
-  const deleteProposal = (id: string) => {
-    setProposals((prev) => prev.filter((proposal) => proposal.id !== id));
-  };
-
-  /**
-   * Toggles the flagged status of a proposal
-   */
-  const toggleFlag = (id: string) => {
-    setProposals((prev) =>
-      prev.map((proposal) => {
-        if (proposal.id === id) {
-          return {
-            ...proposal,
-            isFlagged: !proposal.isFlagged,
-          };
-        }
-        return proposal;
-      })
-    );
-  };
+  }, [setName, proposals, generationMetadata]);
 
   // ============================================================================
   // Reset Function
@@ -233,15 +176,15 @@ export function useGeneration() {
   /**
    * Resets the hook to its initial state
    */
-  const reset = () => {
+  const reset = useCallback(() => {
     setState("idle");
     setText("");
     setSetName("");
-    setProposals([]);
+    clearProposals();
     setError(null);
     setSavedSetInfo(null);
     setGenerationMetadata(null);
-  };
+  }, [clearProposals]);
 
   // ============================================================================
   // Return
@@ -273,4 +216,3 @@ export function useGeneration() {
     reset,
   };
 }
-

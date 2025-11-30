@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { TEXT_MAX_LENGTH, isTextOverLimit, isTextValidForGeneration } from "@/lib/validation/generation.validation";
 
 interface GenerationFormProps {
   text: string;
@@ -8,8 +9,6 @@ interface GenerationFormProps {
   onGenerate: () => void;
   isLoading: boolean;
 }
-
-const MAX_CHARACTERS = 10000;
 
 /**
  * Form component for inputting text to generate flashcards
@@ -21,9 +20,8 @@ const MAX_CHARACTERS = 10000;
  */
 export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: GenerationFormProps) {
   const characterCount = text.length;
-  const isOverLimit = characterCount > MAX_CHARACTERS;
-  const isEmpty = text.trim().length === 0;
-  const isValid = !isEmpty && !isOverLimit;
+  const isOverLimit = isTextOverLimit(text);
+  const isValid = isTextValidForGeneration(text);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +45,7 @@ export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: Ge
             aria-live="polite"
             data-testid="character-counter"
           >
-            {characterCount.toLocaleString("pl-PL")} / {MAX_CHARACTERS.toLocaleString("pl-PL")}
+            {characterCount.toLocaleString("pl-PL")} / {TEXT_MAX_LENGTH.toLocaleString("pl-PL")}
           </span>
         </div>
 
@@ -67,8 +65,8 @@ export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: Ge
 
         {isOverLimit && (
           <p id="character-count-description" className="text-sm text-destructive" role="alert">
-            Tekst przekracza maksymalną długość {MAX_CHARACTERS.toLocaleString("pl-PL")} znaków. Usuń{" "}
-            {(characterCount - MAX_CHARACTERS).toLocaleString("pl-PL")} znaków.
+            Tekst przekracza maksymalną długość {TEXT_MAX_LENGTH.toLocaleString("pl-PL")} znaków. Usuń{" "}
+            {(characterCount - TEXT_MAX_LENGTH).toLocaleString("pl-PL")} znaków.
           </p>
         )}
       </div>
