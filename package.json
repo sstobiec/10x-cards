@@ -22,7 +22,6 @@
     "test:e2e:report": "playwright show-report tests/playwright-report"
   },
   "dependencies": {
-    "@astrojs/node": "^9.4.3",
     "@astrojs/react": "^4.3.1",
     "@astrojs/sitemap": "^3.5.1",
     "@radix-ui/react-slot": "^1.1.2",
@@ -44,6 +43,7 @@
     "zod-to-json-schema": "^3.24.6"
   },
   "devDependencies": {
+    "@astrojs/cloudflare": "^12.6.12",
     "@eslint/compat": "1.2.7",
     "@eslint/js": "9.23.0",
     "@playwright/test": "^1.56.1",
@@ -72,7 +72,8 @@
     "msw": "^2.12.2",
     "prettier-plugin-astro": "0.14.1",
     "typescript-eslint": "8.28.0",
-    "vitest": "^4.0.13"
+    "vitest": "^4.0.13",
+    "wrangler": "^4.53.0"
   },
   "lint-staged": {
     "*.{ts,tsx,astro}": [
