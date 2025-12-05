@@ -2,7 +2,7 @@ import { Page, Locator } from "@playwright/test";
 
 /**
  * Page Object Model for the Review Section
- * 
+ *
  * Represents the review stage where users can:
  * - Review generated flashcard proposals
  * - Edit, delete, or flag flashcards
@@ -11,21 +11,21 @@ import { Page, Locator } from "@playwright/test";
  */
 export class ReviewPage {
   readonly page: Page;
-  
+
   // Set name input and save button
   readonly setNameInput: Locator;
   readonly saveSetButton: Locator;
-  
+
   // Flashcard proposals list
   readonly proposalsList: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    
+
     // Set management
     this.setNameInput = page.getByTestId("set-name-input");
     this.saveSetButton = page.getByTestId("save-flashcard-set-button");
-    
+
     // Proposals list
     this.proposalsList = page.getByTestId("flashcard-proposals-list");
   }
@@ -57,9 +57,7 @@ export class ReviewPage {
    * @param index - The index of the proposal
    */
   async getAversText(index: number): Promise<string> {
-    return await this.getProposalByIndex(index)
-      .getByTestId("flashcard-avers")
-      .textContent() || "";
+    return (await this.getProposalByIndex(index).getByTestId("flashcard-avers").textContent()) || "";
   }
 
   /**
@@ -67,9 +65,7 @@ export class ReviewPage {
    * @param index - The index of the proposal
    */
   async getRewersText(index: number): Promise<string> {
-    return await this.getProposalByIndex(index)
-      .getByTestId("flashcard-rewers")
-      .textContent() || "";
+    return (await this.getProposalByIndex(index).getByTestId("flashcard-rewers").textContent()) || "";
   }
 
   /**
@@ -77,9 +73,7 @@ export class ReviewPage {
    * @param index - The index of the proposal to edit
    */
   async clickEdit(index: number): Promise<void> {
-    await this.getProposalByIndex(index)
-      .getByTestId("edit-flashcard-button")
-      .click();
+    await this.getProposalByIndex(index).getByTestId("edit-flashcard-button").click();
   }
 
   /**
@@ -87,9 +81,7 @@ export class ReviewPage {
    * @param index - The index of the proposal to flag
    */
   async clickFlag(index: number): Promise<void> {
-    await this.getProposalByIndex(index)
-      .getByTestId("flag-flashcard-button")
-      .click();
+    await this.getProposalByIndex(index).getByTestId("flag-flashcard-button").click();
   }
 
   /**
@@ -97,9 +89,7 @@ export class ReviewPage {
    * @param index - The index of the proposal to delete
    */
   async clickDelete(index: number): Promise<void> {
-    await this.getProposalByIndex(index)
-      .getByTestId("delete-flashcard-button")
-      .click();
+    await this.getProposalByIndex(index).getByTestId("delete-flashcard-button").click();
   }
 
   /**
@@ -108,8 +98,7 @@ export class ReviewPage {
    * @param newText - The new text for the avers
    */
   async editAvers(index: number, newText: string): Promise<void> {
-    const input = this.getProposalByIndex(index)
-      .getByTestId("edit-flashcard-avers-input");
+    const input = this.getProposalByIndex(index).getByTestId("edit-flashcard-avers-input");
     await input.fill(newText);
   }
 
@@ -119,8 +108,7 @@ export class ReviewPage {
    * @param newText - The new text for the rewers
    */
   async editRewers(index: number, newText: string): Promise<void> {
-    const input = this.getProposalByIndex(index)
-      .getByTestId("edit-flashcard-rewers-input");
+    const input = this.getProposalByIndex(index).getByTestId("edit-flashcard-rewers-input");
     await input.fill(newText);
   }
 
@@ -129,9 +117,7 @@ export class ReviewPage {
    * @param index - The index of the proposal
    */
   async saveEdit(index: number): Promise<void> {
-    await this.getProposalByIndex(index)
-      .getByTestId("save-edit-flashcard-button")
-      .click();
+    await this.getProposalByIndex(index).getByTestId("save-edit-flashcard-button").click();
   }
 
   /**
@@ -139,9 +125,7 @@ export class ReviewPage {
    * @param index - The index of the proposal
    */
   async cancelEdit(index: number): Promise<void> {
-    await this.getProposalByIndex(index)
-      .getByTestId("cancel-edit-flashcard-button")
-      .click();
+    await this.getProposalByIndex(index).getByTestId("cancel-edit-flashcard-button").click();
   }
 
   /**
@@ -188,4 +172,3 @@ export class ReviewPage {
     await this.clickSaveSet();
   }
 }
-

@@ -20,7 +20,7 @@ export class AIGenerationError extends Error {
   constructor(
     message: string,
     public readonly statusCode?: number,
-    public readonly originalError?: unknown,
+    public readonly originalError?: unknown
   ) {
     super(message);
     this.name = "AIGenerationError";
@@ -84,7 +84,7 @@ function validateFlashcardProposals(data: unknown): data is FlashcardProposalDTO
       typeof item.avers === "string" &&
       typeof item.rewers === "string" &&
       item.avers.length > 0 &&
-      item.rewers.length > 0,
+      item.rewers.length > 0
   );
 }
 
@@ -112,7 +112,11 @@ function parseAIResponse(responseText: string): unknown {
   try {
     return JSON.parse(cleanedText);
   } catch (error) {
-    throw new AIGenerationError(`Failed to parse AI response as JSON: ${error instanceof Error ? error.message : "Unknown error"}`, 500, error);
+    throw new AIGenerationError(
+      `Failed to parse AI response as JSON: ${error instanceof Error ? error.message : "Unknown error"}`,
+      500,
+      error
+    );
   }
 }
 
@@ -125,10 +129,7 @@ function parseAIResponse(responseText: string): unknown {
  * @throws {AIGenerationError} When generation fails
  * @throws {AIServiceUnavailableError} When AI service is unavailable
  */
-export async function generateFlashcards(
-  text: string,
-  model: string = DEFAULT_MODEL,
-): Promise<FlashcardProposalDTO[]> {
+export async function generateFlashcards(text: string, model: string = DEFAULT_MODEL): Promise<FlashcardProposalDTO[]> {
   // Validate API key is configured
   const apiKey = import.meta.env.OPENROUTER_API_KEY;
   if (!apiKey) {
@@ -179,10 +180,7 @@ export async function generateFlashcards(
       }
 
       // Other errors
-      throw new AIGenerationError(
-        `OpenRouter API returned error ${response.status}: ${errorText}`,
-        response.status,
-      );
+      throw new AIGenerationError(`OpenRouter API returned error ${response.status}: ${errorText}`, response.status);
     }
 
     // Parse response
@@ -198,11 +196,7 @@ export async function generateFlashcards(
     const parsedData = parseAIResponse(content);
 
     if (!validateFlashcardProposals(parsedData)) {
-      throw new AIGenerationError(
-        "AI returned invalid flashcard format or empty array",
-        500,
-        parsedData,
-      );
+      throw new AIGenerationError("AI returned invalid flashcard format or empty array", 500, parsedData);
     }
 
     return parsedData;
@@ -228,8 +222,7 @@ export async function generateFlashcards(
     throw new AIGenerationError(
       `Unexpected error during AI generation: ${error instanceof Error ? error.message : "Unknown error"}`,
       500,
-      error,
+      error
     );
   }
 }
-

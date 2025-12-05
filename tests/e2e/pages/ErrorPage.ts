@@ -2,25 +2,25 @@ import { Page, Locator } from "@playwright/test";
 
 /**
  * Page Object Model for the Error Display
- * 
+ *
  * Represents error states throughout the application
  */
 export class ErrorPage {
   readonly page: Page;
-  
+
   // Main container
   readonly errorDisplay: Locator;
-  
+
   // Action buttons
   readonly retryButton: Locator;
   readonly resetButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    
+
     // Error container
     this.errorDisplay = page.getByTestId("error-display");
-    
+
     // Action buttons
     this.retryButton = page.getByTestId("retry-button");
     this.resetButton = page.getByTestId("reset-button");
@@ -44,19 +44,14 @@ export class ErrorPage {
    * Get the error title text
    */
   async getErrorTitle(): Promise<string> {
-    return await this.errorDisplay
-      .locator("h2")
-      .textContent() || "";
+    return (await this.errorDisplay.locator("h2").textContent()) || "";
   }
 
   /**
    * Get the error message text
    */
   async getErrorMessage(): Promise<string> {
-    return await this.errorDisplay
-      .locator("p")
-      .first()
-      .textContent() || "";
+    return (await this.errorDisplay.locator("p").first().textContent()) || "";
   }
 
   /**
@@ -87,4 +82,3 @@ export class ErrorPage {
     return await this.resetButton.isVisible();
   }
 }
-

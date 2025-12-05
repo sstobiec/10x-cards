@@ -1,6 +1,6 @@
 /**
  * Views Components Index
- * 
+ *
  * Exports all view components for easier importing
  */
 
@@ -12,4 +12,3 @@ export { FlashcardProposalItem } from "./FlashcardProposalItem";
 export { SuccessDisplay } from "./SuccessDisplay";
 export { ErrorDisplay } from "./ErrorDisplay";
 export { LoadingSpinner } from "./LoadingSpinner";
-

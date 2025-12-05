@@ -52,13 +52,7 @@ export function GenerationView() {
       }
     };
 
-    return (
-      <ErrorDisplay 
-        error={error} 
-        onRetry={handleRetry} 
-        onReset={reset}
-      />
-    );
+    return <ErrorDisplay error={error} onRetry={handleRetry} onReset={reset} />;
   }
 
   // State: idle
@@ -72,12 +66,7 @@ export function GenerationView() {
           </p>
         </div>
 
-        <GenerationForm
-          text={text}
-          onTextChange={setText}
-          onGenerate={generateProposals}
-          isLoading={false}
-        />
+        <GenerationForm text={text} onTextChange={setText} onGenerate={generateProposals} isLoading={false} />
       </div>
     );
   }
@@ -140,4 +129,3 @@ export function GenerationView() {
     </div>
   );
 }
-

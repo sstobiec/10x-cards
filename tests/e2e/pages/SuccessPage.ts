@@ -2,15 +2,15 @@ import { Page, Locator } from "@playwright/test";
 
 /**
  * Page Object Model for the Success Display
- * 
+ *
  * Represents the success screen after saving a flashcard set
  */
 export class SuccessPage {
   readonly page: Page;
-  
+
   // Main container
   readonly successDisplay: Locator;
-  
+
   // Action buttons
   readonly startLearningButton: Locator;
   readonly generateAnotherSetButton: Locator;
@@ -18,10 +18,10 @@ export class SuccessPage {
 
   constructor(page: Page) {
     this.page = page;
-    
+
     // Success container
     this.successDisplay = page.getByTestId("success-display");
-    
+
     // Navigation buttons
     this.startLearningButton = page.getByTestId("start-learning-button");
     this.generateAnotherSetButton = page.getByTestId("generate-another-set-button");
@@ -46,31 +46,23 @@ export class SuccessPage {
    * Get the success message text
    */
   async getSuccessMessage(): Promise<string> {
-    return await this.successDisplay
-      .locator("h2")
-      .textContent() || "";
+    return (await this.successDisplay.locator("h2").textContent()) || "";
   }
 
   /**
    * Get the set name from the details section
    */
   async getSetName(): Promise<string> {
-    const setNameElement = this.successDisplay
-      .locator("dl")
-      .locator("dd")
-      .first();
-    return await setNameElement.textContent() || "";
+    const setNameElement = this.successDisplay.locator("dl").locator("dd").first();
+    return (await setNameElement.textContent()) || "";
   }
 
   /**
    * Get the flashcard count from the details section
    */
   async getFlashcardCount(): Promise<string> {
-    const flashcardCountElement = this.successDisplay
-      .locator("dl")
-      .locator("dd")
-      .nth(1);
-    return await flashcardCountElement.textContent() || "";
+    const flashcardCountElement = this.successDisplay.locator("dl").locator("dd").nth(1);
+    return (await flashcardCountElement.textContent()) || "";
   }
 
   /**
@@ -102,10 +94,9 @@ export class SuccessPage {
   async getSetId(): Promise<string | null> {
     const href = await this.startLearningButton.getAttribute("href");
     if (!href) return null;
-    
+
     // Extract ID from /sets/{id} format
     const match = href.match(/\/sets\/([^/]+)/);
     return match ? match[1] : null;
   }
 }
-

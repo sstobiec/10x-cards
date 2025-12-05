@@ -75,7 +75,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
   let requestBody: unknown;
   try {
     requestBody = await request.json();
-  } catch (error) {
+  } catch {
     return new Response(
       JSON.stringify({
         error: {

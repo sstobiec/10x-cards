@@ -1,6 +1,6 @@
-import '@testing-library/jest-dom';
-import { expect, afterEach, vi } from 'vitest';
-import { cleanup } from '@testing-library/react';
+import "@testing-library/jest-dom";
+import { afterEach, vi } from "vitest";
+import { cleanup } from "@testing-library/react";
 
 // Extends Vitest's expect method with methods from react-testing-library
 // This allows us to use custom matchers like toBeInTheDocument()
@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 // Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: vi.fn().mockImplementation((query: string) => ({
     matches: false,
@@ -28,20 +28,29 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
+  disconnect() {
+    /* noop */
+  }
+  observe() {
+    /* noop */
+  }
   takeRecords() {
     return [];
   }
-  unobserve() {}
-} as any;
+  unobserve() {
+    /* noop */
+  }
+} as unknown as typeof IntersectionObserver;
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
-  unobserve() {}
-} as any;
-
+  disconnect() {
+    /* noop */
+  }
+  observe() {
+    /* noop */
+  }
+  unobserve() {
+    /* noop */
+  }
+} as unknown as typeof ResizeObserver;

@@ -2,7 +2,7 @@ import { Page, expect } from "@playwright/test";
 
 /**
  * Test Helper Functions
- * 
+ *
  * Reusable utility functions for E2E tests
  */
 
@@ -36,7 +36,7 @@ export async function takeScreenshot(page: Page, name: string): Promise<void> {
  * @param page - Playwright page object
  */
 export async function clearAllInputs(page: Page): Promise<void> {
-  const inputs = await page.locator('input, textarea').all();
+  const inputs = await page.locator("input, textarea").all();
   for (const input of inputs) {
     await input.clear();
   }
@@ -48,11 +48,7 @@ export async function clearAllInputs(page: Page): Promise<void> {
  * @param selector - Element selector
  * @param text - Text to check for
  */
-export async function elementContainsText(
-  page: Page,
-  selector: string,
-  text: string
-): Promise<boolean> {
+export async function elementContainsText(page: Page, selector: string, text: string): Promise<boolean> {
   const element = page.locator(selector);
   const content = await element.textContent();
   return content?.includes(text) ?? false;
@@ -86,12 +82,12 @@ export async function countElements(page: Page, testId: string): Promise<number>
 export async function getAllTextContent(page: Page, testId: string): Promise<string[]> {
   const elements = await page.getByTestId(testId).all();
   const texts: string[] = [];
-  
+
   for (const element of elements) {
     const text = await element.textContent();
     if (text) texts.push(text);
   }
-  
+
   return texts;
 }
 
@@ -118,10 +114,7 @@ export async function verifyTitle(page: Page, title: string | RegExp): Promise<v
  * @param page - Playwright page object
  * @param formData - Object mapping testIds to values
  */
-export async function fillForm(
-  page: Page,
-  formData: Record<string, string>
-): Promise<void> {
+export async function fillForm(page: Page, formData: Record<string, string>): Promise<void> {
   for (const [testId, value] of Object.entries(formData)) {
     await page.getByTestId(testId).fill(value);
   }
@@ -133,11 +126,7 @@ export async function fillForm(
  * @param url - URL pattern to intercept
  * @param response - Mock response data
  */
-export async function mockApiResponse(
-  page: Page,
-  url: string | RegExp,
-  response: unknown
-): Promise<void> {
+export async function mockApiResponse(page: Page, url: string | RegExp, response: unknown): Promise<void> {
   await page.route(url, async (route) => {
     await route.fulfill({
       status: 200,
@@ -174,7 +163,7 @@ export async function mockApiError(
  * @param page - Playwright page object
  * @param accept - Whether to accept (true) or dismiss (false) the dialog
  */
-export async function handleDialog(page: Page, accept: boolean = true): Promise<void> {
+export async function handleDialog(page: Page, accept = true): Promise<void> {
   page.once("dialog", async (dialog) => {
     if (accept) {
       await dialog.accept();
@@ -190,11 +179,7 @@ export async function handleDialog(page: Page, accept: boolean = true): Promise<
  * @param testId - data-testid value
  * @param visible - Expected visibility state
  */
-export async function verifyElementVisibility(
-  page: Page,
-  testId: string,
-  visible: boolean
-): Promise<void> {
+export async function verifyElementVisibility(page: Page, testId: string, visible: boolean): Promise<void> {
   const element = page.getByTestId(testId);
   if (visible) {
     await expect(element).toBeVisible();
@@ -209,11 +194,7 @@ export async function verifyElementVisibility(
  * @param testId - data-testid value
  * @param enabled - Expected enabled state
  */
-export async function verifyElementEnabled(
-  page: Page,
-  testId: string,
-  enabled: boolean
-): Promise<void> {
+export async function verifyElementEnabled(page: Page, testId: string, enabled: boolean): Promise<void> {
   const element = page.getByTestId(testId);
   if (enabled) {
     await expect(element).toBeEnabled();
@@ -237,11 +218,7 @@ export async function scrollIntoView(page: Page, testId: string): Promise<void> 
  * @param testId - data-testid value
  * @param attribute - Attribute name
  */
-export async function getAttributeValue(
-  page: Page,
-  testId: string,
-  attribute: string
-): Promise<string | null> {
+export async function getAttributeValue(page: Page, testId: string, attribute: string): Promise<string | null> {
   return await page.getByTestId(testId).getAttribute(attribute);
 }
 
@@ -261,12 +238,6 @@ export async function pressKey(page: Page, key: string): Promise<void> {
  * @param text - Text to type
  * @param delay - Delay between keystrokes in milliseconds
  */
-export async function typeWithDelay(
-  page: Page,
-  testId: string,
-  text: string,
-  delay: number = 100
-): Promise<void> {
+export async function typeWithDelay(page: Page, testId: string, text: string, delay = 100): Promise<void> {
   await page.getByTestId(testId).type(text, { delay });
 }
-

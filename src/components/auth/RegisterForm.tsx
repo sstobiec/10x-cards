@@ -55,7 +55,7 @@ export default function RegisterForm() {
 
       // Success - show confirmation message
       setIsSuccess(true);
-    } catch (err) {
+    } catch {
       setError("Wystąpił błąd podczas rejestracji. Spróbuj ponownie.");
       setIsLoading(false);
     }
@@ -69,17 +69,14 @@ export default function RegisterForm() {
             Sprawdź swoją skrzynkę mailową
           </h2>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Wysłaliśmy link weryfikacyjny na adres <strong>{email}</strong>.
-            Kliknij go, aby potwierdzić rejestrację i aktywować swoje konto.
+            Wysłaliśmy link weryfikacyjny na adres <strong>{email}</strong>. Kliknij go, aby potwierdzić rejestrację i
+            aktywować swoje konto.
           </p>
           <p className="mt-2 text-center text-sm text-muted-foreground">
             Po potwierdzeniu email będziesz mógł zalogować się do swojego konta.
           </p>
           <div className="mt-6 text-center">
-            <a
-              href="/login"
-              className="font-semibold leading-6 text-primary hover:text-primary/90"
-            >
+            <a href="/login" className="font-semibold leading-6 text-primary hover:text-primary/90">
               Powrót do logowania
             </a>
           </div>
@@ -98,20 +95,14 @@ export default function RegisterForm() {
       footerContent={
         <p className="mt-10 text-center text-sm text-muted-foreground">
           Masz już konto?{" "}
-          <a
-            href="/login"
-            className="font-semibold leading-6 text-primary hover:text-primary/90"
-          >
+          <a href="/login" className="font-semibold leading-6 text-primary hover:text-primary/90">
             Zaloguj się
           </a>
         </p>
       }
     >
       <div>
-        <label
-          htmlFor="username"
-          className="block text-sm font-medium leading-6 text-foreground"
-        >
+        <label htmlFor="username" className="block text-sm font-medium leading-6 text-foreground">
           Nazwa użytkownika
         </label>
         <div className="mt-2">
@@ -129,10 +120,7 @@ export default function RegisterForm() {
       </div>
 
       <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium leading-6 text-foreground"
-        >
+        <label htmlFor="email" className="block text-sm font-medium leading-6 text-foreground">
           Adres email
         </label>
         <div className="mt-2">
@@ -150,10 +138,7 @@ export default function RegisterForm() {
       </div>
 
       <div>
-        <label
-          htmlFor="password"
-          className="block text-sm font-medium leading-6 text-foreground"
-        >
+        <label htmlFor="password" className="block text-sm font-medium leading-6 text-foreground">
           Hasło
         </label>
         <div className="mt-2">
@@ -171,10 +156,7 @@ export default function RegisterForm() {
       </div>
 
       <div>
-        <label
-          htmlFor="confirm-password"
-          className="block text-sm font-medium leading-6 text-foreground"
-        >
+        <label htmlFor="confirm-password" className="block text-sm font-medium leading-6 text-foreground">
           Powtórz hasło
         </label>
         <div className="mt-2">

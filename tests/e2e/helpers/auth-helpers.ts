@@ -63,4 +63,3 @@ export async function isLoggedIn(page: Page): Promise<boolean> {
   // If redirected to login, user is not logged in
   return !page.url().includes("/login");
 }
-
