@@ -6,7 +6,7 @@
  * to ensure type safety and consistency.
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 import type { Tables, TablesInsert, Enums } from "./db/database.types";
 
 // ============================================================================
@@ -331,8 +331,8 @@ export interface ApiError {
  * Zod schema for a single flashcard proposal
  */
 export const FlashcardProposalSchema = z.object({
-  avers: z.string().min(1).describe('Pytanie, które pojawi się na awersie fiszki.'),
-  rewers: z.string().min(1).describe('Odpowiedź, która pojawi się na rewersie fiszki.'),
+  avers: z.string().min(1).describe("Pytanie, które pojawi się na awersie fiszki."),
+  rewers: z.string().min(1).describe("Odpowiedź, która pojawi się na rewersie fiszki."),
 });
 
 /**
@@ -343,7 +343,7 @@ export const FlashcardGenerationSchema = z.object({
     .array(FlashcardProposalSchema)
     .min(1)
     .max(20)
-    .describe('Lista wygenerowanych propozycji fiszek (od 1 do 20).'),
+    .describe("Lista wygenerowanych propozycji fiszek (od 1 do 20)."),
 });
 
 /**

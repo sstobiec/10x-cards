@@ -34,7 +34,7 @@ export default function Navigation({ userEmail }: NavigationProps) {
 
       // Success - redirect to login page
       window.location.href = "/login";
-    } catch (err) {
+    } catch {
       setError("Wystąpił błąd podczas wylogowywania. Spróbuj ponownie.");
       setIsLoggingOut(false);
     }
@@ -73,4 +73,3 @@ export default function Navigation({ userEmail }: NavigationProps) {
     </nav>
   );
 }
-

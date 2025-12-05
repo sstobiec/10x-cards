@@ -5,9 +5,9 @@
  * structured responses from language models using Zod schema validation.
  */
 
-import { z } from 'zod';
-import { zodToJsonSchema } from 'zod-to-json-schema';
-import { ApiError, ConfigurationError, ValidationError } from './ai/errors';
+import { z } from "zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
+import { ApiError, ConfigurationError, ValidationError } from "./ai/errors";
 
 // ============================================================================
 // Type Definitions
@@ -29,9 +29,9 @@ interface GenerationParams<T> {
  */
 interface OpenRouterRequestBody {
   model: string;
-  messages: { role: 'system' | 'user'; content: string }[];
+  messages: { role: "system" | "user"; content: string }[];
   response_format: {
-    type: 'json_schema';
+    type: "json_schema";
     json_schema: {
       name: string;
       strict: boolean;
@@ -50,7 +50,7 @@ interface OpenRouterRequestBody {
  */
 export class OpenRouterService {
   #apiKey: string;
-  #baseUrl = 'https://openrouter.ai/api/v1';
+  #baseUrl = "https://openrouter.ai/api/v1";
 
   /**
    * Initializes the OpenRouter service
@@ -59,7 +59,7 @@ export class OpenRouterService {
   constructor() {
     this.#apiKey = import.meta.env.OPENROUTER_API_KEY;
     if (!this.#apiKey) {
-      throw new ConfigurationError('Brak klucza OPENROUTER_API_KEY w zmiennych środowiskowych.');
+      throw new ConfigurationError("Brak klucza OPENROUTER_API_KEY w zmiennych środowiskowych.");
     }
   }
 
@@ -75,12 +75,12 @@ export class OpenRouterService {
     systemPrompt,
     userPrompt,
     schema,
-    modelName = 'openai/gpt-4o',
+    modelName = "openai/gpt-4o",
     modelParams = {},
   }: GenerationParams<T>): Promise<T> {
     // Validate input
     if (!userPrompt) {
-      throw new ValidationError('Pusty userPrompt jest niedozwolony.');
+      throw new ValidationError("Pusty userPrompt jest niedozwolony.");
     }
 
     // Build request body
@@ -110,17 +110,17 @@ export class OpenRouterService {
     modelName: string,
     modelParams: Record<string, unknown>
   ): OpenRouterRequestBody {
-    const schemaName = 'StructuredResponse';
+    const schemaName = "StructuredResponse";
     const jsonSchema = zodToJsonSchema(schema, schemaName);
 
     return {
       model: modelName,
       messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
       ],
       response_format: {
-        type: 'json_schema',
+        type: "json_schema",
         json_schema: {
           name: schemaName,
           strict: true,
@@ -141,10 +141,10 @@ export class OpenRouterService {
   async #sendRequest(body: OpenRouterRequestBody): Promise<Response> {
     try {
       const response = await fetch(`${this.#baseUrl}/chat/completions`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.#apiKey}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.#apiKey}`,
         },
         body: JSON.stringify(body),
       });
@@ -157,7 +157,7 @@ export class OpenRouterService {
       return response;
     } catch (error) {
       if (error instanceof ApiError) throw error;
-      throw new ApiError('Błąd sieci podczas komunikacji z OpenRouter.', 500, error);
+      throw new ApiError("Błąd sieci podczas komunikacji z OpenRouter.", 500, error);
     }
   }
 
@@ -174,19 +174,19 @@ export class OpenRouterService {
     try {
       responseData = await response.json();
     } catch {
-      throw new ValidationError('Odpowiedź API nie jest prawidłowym formatem JSON.');
+      throw new ValidationError("Odpowiedź API nie jest prawidłowym formatem JSON.");
     }
 
     const content = responseData?.choices?.[0]?.message?.content;
-    if (typeof content !== 'string') {
-      throw new ValidationError('Brak zawartości w odpowiedzi API.');
+    if (typeof content !== "string") {
+      throw new ValidationError("Brak zawartości w odpowiedzi API.");
     }
 
     let parsedContent;
     try {
       parsedContent = JSON.parse(content);
     } catch {
-      throw new ValidationError('Zawartość odpowiedzi nie jest prawidłowym obiektem JSON.');
+      throw new ValidationError("Zawartość odpowiedzi nie jest prawidłowym obiektem JSON.");
     }
 
     const validationResult = schema.safeParse(parsedContent);
@@ -197,4 +197,3 @@ export class OpenRouterService {
     return validationResult.data;
   }
 }
-
