@@ -30,9 +30,7 @@ export function FlashcardProposalList({
   return (
     <div className="space-y-4" data-testid="flashcard-proposals-list">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">
-          Wygenerowane fiszki ({proposals.length})
-        </h3>
+        <h3 className="text-lg font-semibold">Wygenerowane fiszki ({proposals.length})</h3>
         <div className="text-sm text-muted-foreground">
           {proposals.filter((p) => p.isFlagged).length > 0 && (
             <span className="text-amber-600 dark:text-amber-400">
@@ -56,4 +54,3 @@ export function FlashcardProposalList({
     </div>
   );
 }
-

@@ -64,7 +64,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
   let requestBody: unknown;
   try {
     requestBody = await request.json();
-  } catch (error) {
+  } catch {
     return new Response(
       JSON.stringify({
         error: {
@@ -113,7 +113,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
     } else {
       // Use new OpenRouterService with structured output
       const openRouterService = new OpenRouterService();
-      
+
       const systemPrompt = `You are an expert in creating learning materials. Your task is to generate flashcard proposals from the provided text. 
 Focus on extracting key concepts, definitions, facts, and relationships.
 Return your response in JSON format according to the provided schema.`;
@@ -220,9 +220,8 @@ ${text}`;
         JSON.stringify({
           error: {
             code: error.status >= 500 ? "SERVICE_UNAVAILABLE" : "API_ERROR",
-            message: error.status >= 500 
-              ? "AI service is temporarily unavailable. Please try again later."
-              : error.message,
+            message:
+              error.status >= 500 ? "AI service is temporarily unavailable. Please try again later." : error.message,
             details: {
               model: modelToUse,
               duration: errorDuration,

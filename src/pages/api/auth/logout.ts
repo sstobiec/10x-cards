@@ -24,4 +24,3 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     status: 200,
   });
 };
-

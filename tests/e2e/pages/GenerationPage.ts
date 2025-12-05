@@ -2,12 +2,12 @@ import { Page, Locator } from "@playwright/test";
 
 /**
  * Page Object Model for the Flashcard Generation Page
- * 
+ *
  * Represents the /generate route where users input text and generate flashcards
  */
 export class GenerationPage {
   readonly page: Page;
-  
+
   // Locators
   readonly textInput: Locator;
   readonly characterCounter: Locator;
@@ -17,12 +17,12 @@ export class GenerationPage {
 
   constructor(page: Page) {
     this.page = page;
-    
+
     // Form elements
     this.textInput = page.getByTestId("generation-text-input");
     this.characterCounter = page.getByTestId("character-counter");
     this.generateButton = page.getByTestId("generate-flashcards-button");
-    
+
     // Loading state
     this.loadingSpinner = page.getByTestId("loading-spinner");
     this.loadingMessage = page.getByTestId("loading-message");
@@ -48,7 +48,7 @@ export class GenerationPage {
    * @returns The character count as a string (e.g., "150 / 10 000")
    */
   async getCharacterCount(): Promise<string> {
-    return await this.characterCounter.textContent() || "";
+    return (await this.characterCounter.textContent()) || "";
   }
 
   /**
@@ -89,4 +89,3 @@ export class GenerationPage {
     await this.waitForLoadingToComplete();
   }
 }
-

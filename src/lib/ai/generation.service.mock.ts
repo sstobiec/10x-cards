@@ -17,8 +17,10 @@ async function simulateDelay(minMs = 800, maxMs = 2000): Promise<void> {
 
 /**
  * Extracts key phrases and words from text for flashcard generation
+ * @deprecated Kept for future use
  */
-function extractKeyPhrases(text: string): string[] {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function _extractKeyPhrases(text: string): string[] {
   // Split into sentences
   const sentences = text
     .split(/[.!?]+/)
@@ -66,7 +68,8 @@ function generateQuestion(text: string, index: number): string {
 /**
  * Generates an answer based on text content
  */
-function generateAnswer(text: string, questionText: string): string {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function generateAnswer(text: string, _questionText: string): string {
   // Extract sentences that might be relevant
   const sentences = text
     .split(/[.!?]+/)
@@ -188,7 +191,8 @@ function generateDefaultFlashcards(text: string): FlashcardProposalDTO[] {
  * @param model - The AI model to simulate (not used in mock, but kept for API compatibility)
  * @returns Promise resolving to array of flashcard proposals
  */
-export async function generateFlashcardsMock(text: string, model = "mock-model"): Promise<FlashcardProposalDTO[]> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function generateFlashcardsMock(text: string, _model = "mock-model"): Promise<FlashcardProposalDTO[]> {
   // Simulate API delay
   await simulateDelay(1000, 2500);
 
