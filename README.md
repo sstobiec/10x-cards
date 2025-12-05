@@ -28,7 +28,7 @@ The project is built with a modern tech stack:
 | **Backend & Database**| Supabase                                                       |
 | **AI Integration**    | OpenRouter.ai                                                  |
 | **Testing**           | Vitest, React Testing Library, Playwright, MSW                 |
-| **CI/CD & Hosting**   | GitHub Actions, DigitalOcean                                   |
+| **CI/CD & Hosting**   | GitHub Actions, Cloudflare Pages                               |
 
 ## Getting Started Locally
 
@@ -87,6 +87,35 @@ This project includes the following scripts defined in `package.json`:
 - `npm run format`: Formats the code using Prettier.
 - `npm run test`: Runs unit and integration tests with Vitest.
 - `npm run test:e2e`: Runs end-to-end tests with Playwright.
+
+## Deployments & Releases
+
+The application is hosted on **Cloudflare Pages**, leveraging its edge network for high performance and low latency.
+
+### Deployment Strategy
+
+- **Hosting Platform**: Cloudflare Pages
+- **Framework Adapter**: `@astrojs/cloudflare`
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+
+### CI/CD Pipeline
+
+Deployments are automated via **GitHub Actions** and **Cloudflare Pages** integration:
+
+1.  **Preview Environments**: Every Pull Request automatically deploys a preview version of the application. This allows for testing changes in a production-like environment before merging.
+2.  **Production Deployment**: Merges to the `main` branch automatically trigger a deployment to the production environment.
+
+### Infrastructure Decisions
+
+We chose Cloudflare Pages for the following reasons:
+
+-   **Edge Network**: Global distribution ensures fast load times for users worldwide.
+-   **Cost Efficiency**: Generous free tier and affordable paid plans suitable for a growing startup.
+-   **Performance**: Native support for Astro via the `@astrojs/cloudflare` adapter.
+-   **Scalability**: Capable of handling high traffic without complex infrastructure management.
+
+For more details on the analysis and selection process, refer to the project documentation.
 
 ## Project Scope
 

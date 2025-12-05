@@ -21,7 +21,7 @@ Testowanie:
 
 CI/CD i Hosting:
 - Github Actions
-- DigitalOcean
+- Cloudflare Pages
 </tech-stack>
 
 Dokonaj krytycznej lecz rzeczowej analizy czy <tech-stack> odpowiednio adresuje potrzeby @prd.md. Rozważ następujące pytania:
