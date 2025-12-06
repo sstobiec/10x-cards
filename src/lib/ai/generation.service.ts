@@ -6,6 +6,7 @@
  */
 
 import type { FlashcardProposalDTO } from "../../types";
+import { OPENROUTER_API_KEY } from "astro:env/server";
 
 // Default AI model to use if not specified
 const DEFAULT_MODEL = "openai/gpt-4o";
@@ -131,8 +132,7 @@ function parseAIResponse(responseText: string): unknown {
  */
 export async function generateFlashcards(text: string, model: string = DEFAULT_MODEL): Promise<FlashcardProposalDTO[]> {
   // Validate API key is configured
-  const apiKey = import.meta.env.OPENROUTER_API_KEY;
-  if (!apiKey) {
+  if (!OPENROUTER_API_KEY) {
     throw new AIGenerationError("OpenRouter API key is not configured", 500);
   }
 
@@ -160,7 +160,7 @@ export async function generateFlashcards(text: string, model: string = DEFAULT_M
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
         "HTTP-Referer": "https://10x-cards.app", // Optional: For OpenRouter analytics
         "X-Title": "10x Cards", // Optional: For OpenRouter analytics
       },

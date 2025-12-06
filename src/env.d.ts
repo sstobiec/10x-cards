@@ -14,13 +14,10 @@ declare global {
   }
 }
 
-interface ImportMetaEnv {
-  readonly SUPABASE_URL: string;
-  readonly SUPABASE_KEY: string;
-  readonly OPENROUTER_API_KEY: string;
-  // more env variables...
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}
+// Note: Environment variables are now managed through astro:env module
+// Import them from "astro:env/server" for server-side secrets:
+//   import { SUPABASE_URL, SUPABASE_KEY, OPENROUTER_API_KEY } from "astro:env/server";
+// Import from "astro:env/client" for public client-side variables:
+//   import { USE_MOCK_AI } from "astro:env/client";
+//
+// Schema is defined in astro.config.mjs under env.schema

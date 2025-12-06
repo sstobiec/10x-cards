@@ -1,0 +1,11 @@
+# Cloudflare Workers local environment variables
+# Copy this file to .dev.vars and fill in your values
+# This file is used by `wrangler dev` for local development
+
+# Supabase (Required)
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_anon_key
+
+# OpenRouter.ai (Optional - Mock AI is used by default in development)
+OPENROUTER_API_KEY=your_openrouter_api_key
+

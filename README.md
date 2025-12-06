@@ -80,14 +80,24 @@ To run the project locally, follow these steps:
 
 This project includes the following scripts defined in `package.json`:
 
-- `npm run dev`: Starts the development server.
-- `npm run build`: Builds the application for production.
-- `npm run preview`: Previews the production build locally.
-- `npm run lint`: Lints the codebase for errors.
-- `npm run lint:fix`: Lints and automatically fixes issues.
-- `npm run format`: Formats the code using Prettier.
-- `npm run test`: Runs unit and integration tests with Vitest.
-- `npm run test:e2e`: Runs end-to-end tests with Playwright.
+### Development
+- `npm run dev`: Starts the Astro development server
+- `npm run build`: Builds the application for production
+
+### Preview & Deployment (Cloudflare)
+- `npm run preview`: Previews production build with Wrangler (Cloudflare Workers)
+- `npm run preview:local`: Previews production build locally without Cloudflare services
+- `npm run deploy`: Builds and deploys to Cloudflare Workers (production)
+- `npm run deploy:preview`: Builds and deploys to preview environment
+
+### Code Quality
+- `npm run lint`: Lints the codebase for errors
+- `npm run lint:fix`: Lints and automatically fixes issues
+- `npm run format`: Formats the code using Prettier
+
+### Testing
+- `npm run test`: Runs unit and integration tests with Vitest
+- `npm run test:e2e`: Runs end-to-end tests with Playwright
 
 ## Deployment & Hosting
 

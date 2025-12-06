@@ -16,9 +16,10 @@ import { ApiError, ConfigurationError, ValidationError } from "../../../lib/ai/e
 import { generateFlashcardsMock } from "../../../lib/ai/generation.service.mock";
 import { logGenerationError, createErrorLogData } from "../../../lib/logging/error.service";
 import { createSupabaseServerInstance } from "../../../db/supabase.client";
+import { USE_MOCK_AI } from "astro:env/server";
 
-// Use mock service in development mode
-const USE_MOCK_AI = import.meta.env.DEV || import.meta.env.USE_MOCK_AI === "true";
+// Use mock service in development mode or when explicitly enabled
+const useMockAI = import.meta.env.DEV || USE_MOCK_AI;
 
 // Disable pre-rendering for this API route
 export const prerender = false;
@@ -102,13 +103,13 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
   const { text, model } = validatedData;
 
   // Determine which model to use (use provided model or let service use default)
-  const modelToUse = model || (USE_MOCK_AI ? "mock-model" : "openai/gpt-4o");
+  const modelToUse = model || (useMockAI ? "mock-model" : "openai/gpt-4o");
 
   try {
     let flashcardProposals;
 
     // Call AI generation service (mock or real based on environment)
-    if (USE_MOCK_AI) {
+    if (useMockAI) {
       flashcardProposals = await generateFlashcardsMock(text, modelToUse);
     } else {
       // Use new OpenRouterService with structured output

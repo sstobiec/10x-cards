@@ -81,9 +81,20 @@ Cloudflare Pages/Workers zostało wybrane jako platforma hostingowa po analizie 
    directory = "./dist"
    ```
 
-4. **Weryfikacja kompatybilności:**
-   - Supabase client - wymaga sprawdzenia kompatybilności z Workers
-   - Middleware - dostosowanie do Workers runtime
+4. **Zmienne środowiskowe z `astro:env`:**
+   
+   Cloudflare Workers wymagają specjalnego podejścia do zmiennych środowiskowych.
+   Projekt używa modułu `astro:env` dla bezpiecznego dostępu do zmiennych:
+   
+   ```typescript
+   // Import zmiennych serwerowych (sekrety)
+   import { SUPABASE_URL, SUPABASE_KEY, OPENROUTER_API_KEY } from "astro:env/server";
+   
+   // Import zmiennych publicznych
+   import { USE_MOCK_AI } from "astro:env/server";
+   ```
+   
+   Schema zmiennych jest zdefiniowany w `astro.config.mjs` pod kluczem `env.schema`.
 
 #### Struktura środowisk
 
@@ -126,11 +137,14 @@ jobs:
 
 Konfiguracja w Cloudflare Dashboard > Pages > Settings > Environment Variables:
 
-| Zmienna | Środowisko | Opis |
-|---------|------------|------|
-| `SUPABASE_URL` | Production, Preview | URL projektu Supabase |
-| `SUPABASE_KEY` | Production, Preview | Klucz anon Supabase |
-| `OPENROUTER_API_KEY` | Production | Klucz API OpenRouter |
+| Zmienna | Typ | Środowisko | Opis |
+|---------|-----|------------|------|
+| `SUPABASE_URL` | Secret | Production, Preview | URL projektu Supabase |
+| `SUPABASE_KEY` | Secret | Production, Preview | Klucz anon Supabase |
+| `OPENROUTER_API_KEY` | Secret | Production | Klucz API OpenRouter (opcjonalny) |
+| `USE_MOCK_AI` | Public | Preview | Użyj mock AI zamiast OpenRouter (default: false) |
+
+**Uwaga:** Zmienne są zarządzane przez moduł `astro:env`. Sekrety nie są walidowane podczas builda (Cloudflare wstrzykuje je w runtime), ale są walidowane przy pierwszym użyciu.
 
 #### Pricing (stan na 2024-12)
 
