@@ -18,7 +18,6 @@ export default function ResetPasswordForm() {
     }
 
     setIsLoading(true);
-    console.log("Submitting:", { email });
     // TODO: Implement API call to /api/auth/reset-password
     setTimeout(() => {
       setIsLoading(false);

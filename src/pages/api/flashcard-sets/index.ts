@@ -151,6 +151,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
 
     // Handle transaction errors (500 Internal Server Error)
     if (error instanceof FlashcardSetTransactionError) {
+      // eslint-disable-next-line no-console
       console.error("Flashcard set transaction error:", error);
       return new Response(
         JSON.stringify({
@@ -170,6 +171,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
     }
 
     // Handle all other unexpected errors (500)
+    // eslint-disable-next-line no-console
     console.error("Unexpected error creating flashcard set:", error);
     return new Response(
       JSON.stringify({

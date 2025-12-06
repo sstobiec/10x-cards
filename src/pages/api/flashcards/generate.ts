@@ -171,6 +171,7 @@ ${text}`;
       }
     } catch (loggingError) {
       // Log to console but don't fail the request
+      // eslint-disable-next-line no-console
       console.error("Failed to log error to database:", loggingError);
     }
 

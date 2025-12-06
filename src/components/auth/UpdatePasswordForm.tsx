@@ -24,7 +24,6 @@ export default function UpdatePasswordForm() {
     // TODO: Add password strength validation
 
     setIsLoading(true);
-    console.log("Submitting new password");
     // TODO: Implement API call to /api/auth/update-password
     // This will require the access_token from the URL fragment
     setTimeout(() => {
