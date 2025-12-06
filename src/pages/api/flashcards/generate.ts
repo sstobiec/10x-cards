@@ -9,6 +9,7 @@
 
 import type { APIRoute } from "astro";
 import { z } from "zod";
+import { USE_MOCK_AI as USE_MOCK_AI_ENV } from "astro:env/server";
 import type { GenerateFlashcardsRequestDTO, GenerateFlashcardsResponseDTO, ErrorResponseDTO } from "../../../types";
 import { FlashcardGenerationSchema } from "../../../types";
 import { OpenRouterService } from "../../../lib/openrouter.service";
@@ -17,8 +18,8 @@ import { generateFlashcardsMock } from "../../../lib/ai/generation.service.mock"
 import { logGenerationError, createErrorLogData } from "../../../lib/logging/error.service";
 import { createSupabaseServerInstance } from "../../../db/supabase.client";
 
-// Use mock service in development mode
-const USE_MOCK_AI = import.meta.env.DEV || import.meta.env.USE_MOCK_AI === "true";
+// Use mock service in development mode or when explicitly enabled
+const USE_MOCK_AI = import.meta.env.DEV || USE_MOCK_AI_ENV;
 
 // Disable pre-rendering for this API route
 export const prerender = false;

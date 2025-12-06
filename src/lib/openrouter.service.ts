@@ -7,6 +7,7 @@
 
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
+import { OPENROUTER_API_KEY } from "astro:env/server";
 import { ApiError, ConfigurationError, ValidationError } from "./ai/errors";
 
 // ============================================================================
@@ -57,7 +58,7 @@ export class OpenRouterService {
    * @throws {ConfigurationError} If OPENROUTER_API_KEY is not configured
    */
   constructor() {
-    this.#apiKey = import.meta.env.OPENROUTER_API_KEY;
+    this.#apiKey = OPENROUTER_API_KEY;
     if (!this.#apiKey) {
       throw new ConfigurationError("Brak klucza OPENROUTER_API_KEY w zmiennych środowiskowych.");
     }

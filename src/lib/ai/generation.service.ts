@@ -5,6 +5,7 @@
  * to generate flashcard proposals from user-provided text.
  */
 
+import { OPENROUTER_API_KEY } from "astro:env/server";
 import type { FlashcardProposalDTO } from "../../types";
 
 // Default AI model to use if not specified
@@ -131,7 +132,7 @@ function parseAIResponse(responseText: string): unknown {
  */
 export async function generateFlashcards(text: string, model: string = DEFAULT_MODEL): Promise<FlashcardProposalDTO[]> {
   // Validate API key is configured
-  const apiKey = import.meta.env.OPENROUTER_API_KEY;
+  const apiKey = OPENROUTER_API_KEY;
   if (!apiKey) {
     throw new AIGenerationError("OpenRouter API key is not configured", 500);
   }
