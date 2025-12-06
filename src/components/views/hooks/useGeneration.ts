@@ -112,6 +112,7 @@ export function useGeneration() {
       });
       setState("reviewing");
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error("Error generating flashcards:", err);
       setError(createApiError("Błąd generowania", err));
       setState("error");
@@ -163,6 +164,7 @@ export function useGeneration() {
       setSavedSetInfo(data);
       setState("success");
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error("Error saving flashcard set:", err);
       setError(createApiError("Błąd zapisywania", err));
       setState("error");

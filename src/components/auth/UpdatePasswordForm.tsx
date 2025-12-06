@@ -24,7 +24,6 @@ export default function UpdatePasswordForm() {
     // TODO: Add password strength validation
 
     setIsLoading(true);
-    console.log("Submitting new password");
     // TODO: Implement API call to /api/auth/update-password
     // This will require the access_token from the URL fragment
     setTimeout(() => {
@@ -46,10 +45,7 @@ export default function UpdatePasswordForm() {
             Możesz teraz zalogować się przy użyciu nowego hasła.
           </p>
           <div className="mt-6 text-center">
-            <a
-              href="/login"
-              className="font-semibold leading-6 text-primary hover:text-primary/90"
-            >
+            <a href="/login" className="font-semibold leading-6 text-primary hover:text-primary/90">
               Przejdź do logowania
             </a>
           </div>
@@ -67,10 +63,7 @@ export default function UpdatePasswordForm() {
       error={error}
     >
       <div>
-        <label
-          htmlFor="password"
-          className="block text-sm font-medium leading-6 text-foreground"
-        >
+        <label htmlFor="password" className="block text-sm font-medium leading-6 text-foreground">
           Nowe hasło
         </label>
         <div className="mt-2">
@@ -88,10 +81,7 @@ export default function UpdatePasswordForm() {
       </div>
 
       <div>
-        <label
-          htmlFor="confirm-password"
-          className="block text-sm font-medium leading-6 text-foreground"
-        >
+        <label htmlFor="confirm-password" className="block text-sm font-medium leading-6 text-foreground">
           Powtórz nowe hasło
         </label>
         <div className="mt-2">

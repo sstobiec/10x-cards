@@ -1,6 +1,6 @@
 /**
  * Test Data Fixtures
- * 
+ *
  * Reusable test data for E2E tests
  */
 
@@ -9,13 +9,13 @@
  */
 export const SAMPLE_NOTES = {
   SHORT: "AI to sztuczna inteligencja.",
-  
+
   MEDIUM: `
     TypeScript to nadzbór JavaScriptu.
     Dodaje statyczne typowanie do JavaScript.
     Kompiluje się do czystego JavaScript.
   `.trim(),
-  
+
   LONG: `
     Historia Polski w XIX wieku
     
@@ -36,7 +36,7 @@ export const SAMPLE_NOTES = {
     Było to największe powstanie narodowe w XIX wieku.
     Zakończyło się klęską w 1864 roku.
   `.trim(),
-  
+
   MULTIPLE_TOPICS: `
     Fotosynteza to proces zamiany energii świetlnej w energię chemiczną.
     Zachodzi w chloroplastach komórek roślinnych.
@@ -47,7 +47,7 @@ export const SAMPLE_NOTES = {
     DNA to kwas dezoksyrybonukleinowy zawierający informację genetyczną.
     Ma strukturę podwójnej helisy.
   `.trim(),
-  
+
   TECHNICAL: `
     React to biblioteka JavaScript do budowania interfejsów użytkownika.
     Wykorzystuje wirtualny DOM do efektywnego renderowania.
@@ -84,7 +84,7 @@ export const FLASHCARD_CONTENT = {
     avers: "Co to jest AI?",
     rewers: "AI (Artificial Intelligence) to sztuczna inteligencja.",
   },
-  
+
   DETAILED: {
     avers: "Jakie są główne cechy fotosyntez?",
     rewers: `Fotosynteza to proces charakteryzujący się następującymi cechami:
@@ -93,7 +93,7 @@ export const FLASHCARD_CONTENT = {
 3. Produkuje glukozę i tlen
 4. Wykorzystuje CO2 i wodę`,
   },
-  
+
   CODE_EXAMPLE: {
     avers: "Jak utworzyć komponent React?",
     rewers: `function MyComponent() {
@@ -131,4 +131,3 @@ export const WAIT_TIMES = {
   LONG: 30000,
   GENERATION_TIMEOUT: 60000,
 };
-

@@ -18,7 +18,6 @@ export default function ResetPasswordForm() {
     }
 
     setIsLoading(true);
-    console.log("Submitting:", { email });
     // TODO: Implement API call to /api/auth/reset-password
     setTimeout(() => {
       setIsLoading(false);
@@ -35,14 +34,10 @@ export default function ResetPasswordForm() {
             Sprawdź swoją skrzynkę mailową
           </h2>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Jeśli konto dla podanego adresu email istnieje, wysłaliśmy na nie
-            instrukcje dotyczące resetowania hasła.
+            Jeśli konto dla podanego adresu email istnieje, wysłaliśmy na nie instrukcje dotyczące resetowania hasła.
           </p>
           <div className="mt-6 text-center">
-            <a
-              href="/login"
-              className="font-semibold leading-6 text-primary hover:text-primary/90"
-            >
+            <a href="/login" className="font-semibold leading-6 text-primary hover:text-primary/90">
               Powrót do logowania
             </a>
           </div>
@@ -61,20 +56,14 @@ export default function ResetPasswordForm() {
       footerContent={
         <p className="mt-10 text-center text-sm text-muted-foreground">
           Pamiętasz hasło?{" "}
-          <a
-            href="/login"
-            className="font-semibold leading-6 text-primary hover:text-primary/90"
-          >
+          <a href="/login" className="font-semibold leading-6 text-primary hover:text-primary/90">
             Zaloguj się
           </a>
         </p>
       }
     >
       <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium leading-6 text-foreground"
-        >
+        <label htmlFor="email" className="block text-sm font-medium leading-6 text-foreground">
           Adres email
         </label>
         <div className="mt-2">

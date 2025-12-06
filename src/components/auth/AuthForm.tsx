@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 interface AuthFormProps {
   title: string;
@@ -29,7 +28,13 @@ export function AuthForm({ title, children, buttonText, onSubmit, isLoading, err
           )}
 
           <div>
-            <Button type="submit" disabled={isLoading} className="flex w-full justify-center" aria-busy={isLoading} data-testid="auth-submit-button">
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="flex w-full justify-center"
+              aria-busy={isLoading}
+              data-testid="auth-submit-button"
+            >
               {isLoading ? (
                 <>
                   <svg

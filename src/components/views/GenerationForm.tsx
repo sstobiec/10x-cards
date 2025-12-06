@@ -106,4 +106,3 @@ export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: Ge
     </form>
   );
 }
-

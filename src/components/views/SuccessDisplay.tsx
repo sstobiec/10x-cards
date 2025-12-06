@@ -15,7 +15,10 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
   return (
     <div className="container px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-4 sm:p-6 lg:p-8 text-center" data-testid="success-display">
+        <div
+          className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-4 sm:p-6 lg:p-8 text-center"
+          data-testid="success-display"
+        >
           {/* Success Icon */}
           <div className="flex justify-center mb-4">
             <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-2 sm:p-3">
@@ -33,9 +36,7 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
           </div>
 
           {/* Success Title */}
-          <h2 className="text-2xl sm:text-3xl font-bold text-green-900 dark:text-green-100 mb-2">
-            Zestaw zapisany!
-          </h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-green-900 dark:text-green-100 mb-2">Zestaw zapisany!</h2>
 
           {/* Success Message */}
           <p className="text-base text-green-800 dark:text-green-200 mb-6">
@@ -45,30 +46,28 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
           {/* Set Details */}
           <div className="bg-white dark:bg-gray-900 rounded-lg p-4 sm:p-6 mb-6 text-left border border-green-200 dark:border-green-800">
             <h3 className="text-lg font-semibold text-foreground mb-4">Szczegóły zestawu</h3>
-            
+
             <dl className="space-y-3">
               <div className="flex justify-between items-start">
                 <dt className="text-sm font-medium text-muted-foreground">Nazwa zestawu:</dt>
                 <dd className="text-sm font-semibold text-foreground text-right ml-4">{savedSetInfo.name}</dd>
               </div>
-              
+
               <div className="flex justify-between items-start">
                 <dt className="text-sm font-medium text-muted-foreground">Liczba fiszek:</dt>
                 <dd className="text-sm font-semibold text-foreground">{savedSetInfo.flashcard_count}</dd>
               </div>
-              
+
               <div className="flex justify-between items-start">
                 <dt className="text-sm font-medium text-muted-foreground">Model AI:</dt>
                 <dd className="text-sm text-foreground font-mono">{savedSetInfo.model}</dd>
               </div>
-              
+
               <div className="flex justify-between items-start">
                 <dt className="text-sm font-medium text-muted-foreground">Czas generowania:</dt>
-                <dd className="text-sm text-foreground">
-                  {(savedSetInfo.generation_duration / 1000).toFixed(2)}s
-                </dd>
+                <dd className="text-sm text-foreground">{(savedSetInfo.generation_duration / 1000).toFixed(2)}s</dd>
               </div>
-              
+
               <div className="flex justify-between items-start">
                 <dt className="text-sm font-medium text-muted-foreground">Data utworzenia:</dt>
                 <dd className="text-sm text-foreground">
@@ -116,12 +115,7 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
                 stroke="currentColor"
                 aria-hidden="true"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               Generuj kolejny zestaw
             </Button>
@@ -152,4 +146,3 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
     </div>
   );
 }
-
