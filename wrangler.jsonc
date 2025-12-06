@@ -1,24 +1,14 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "10x-cards",
-  "main": "dist/_worker.js/index.js",
-  // Update compatibility_date to the deployment date
-  "compatibility_date": "2025-01-15",
-  "compatibility_flags": ["nodejs_compat"],
+  "main": "./dist/_worker.js/index.js",
+  "compatibility_date": "2025-08-15",
+  "compatibility_flags": [
+    "nodejs_compat_v2"
+  ],
   "assets": {
-    "binding": "ASSETS",
     "directory": "./dist"
   },
   "observability": {
     "enabled": true
   }
-  // Environment variables should be set in Cloudflare Dashboard or using:
-  // npx wrangler secret put SUPABASE_URL
-  // npx wrangler secret put SUPABASE_KEY
-  // npx wrangler secret put OPENROUTER_API_KEY
-  //
-  // For local development, you can use a .dev.vars file (gitignored):
-  // SUPABASE_URL=your_supabase_url
-  // SUPABASE_KEY=your_supabase_key
-  // OPENROUTER_API_KEY=your_openrouter_api_key
 }
