@@ -6,11 +6,11 @@ Frontend:
 - Tailwind 4
 - Shadcn/ui
 
-Backend i bazydanych:
+Backend i baza danych:
 - Supabase
 
 AI - Komunikacja z modelami: 
-Openrouter.ai:
+- OpenRouter.ai
 
 Testowanie:
 - Vitest (testy jednostkowe i integracyjne)
@@ -20,14 +20,127 @@ Testowanie:
 - Supabase CLI (lokalna instancja bazy danych dla testów)
 
 CI/CD i Hosting:
-- Github Actions
-- DigitalOcean
+- GitHub Actions
+- Cloudflare Pages/Workers
 </tech-stack>
 
-Dokonaj krytycznej lecz rzeczowej analizy czy <tech-stack> odpowiednio adresuje potrzeby @prd.md. Rozważ następujące pytania:
-1. Czy technologia pozwoli nam szybko dostarczyć MVP?
-2. Czy rozwiązanie będzie skalowalne w miarę wzrostu projektu?
-3. Czy koszt utrzymania i rozwoju będzie akceptowalny?
-4. Czy potrzebujemy aż tak złożonego rozwiązania?
-5. Czy nie istnieje prostsze podejście, które spełni nasze wymagania?
-6. Czy technologie pozwoli nam zadbać o odpowiednie bezpieczeństwo?
+---
+
+## Deployment & Releases
+
+### Platforma hostingowa: Cloudflare Pages/Workers
+
+**Decyzja podjęta:** 2024-12  
+**Status:** Wybrana do wdrożenia
+
+#### Uzasadnienie wyboru
+
+Cloudflare Pages/Workers zostało wybrane jako platforma hostingowa po analizie 5 alternatyw (Vercel, Netlify, Cloudflare, DigitalOcean App Platform, Railway) pod kątem:
+- Złożoności wdrażania
+- Kompatybilności ze stosem technologicznym
+- Konfiguracji wielu środowisk
+- Planów subskrypcji i możliwości komercjalizacji
+
+**Kluczowe zalety:**
+1. **Najlepsza wartość cenowa** - Free tier: 100k requests/day, unlimited bandwidth, komercyjne użycie dozwolone
+2. **Globalna dystrybucja edge** - 300+ punktów obecności na świecie
+3. **Oficjalny adapter Astro** - `@astrojs/cloudflare` utrzymywany przez zespół Astro
+4. **Platforma deweloperska** - dostęp do KV, D1 (baza danych), R2 (storage), AI
+5. **Skalowalność** - automatyczne skalowanie bez konfiguracji
+
+**Znane ograniczenia:**
+- Workers używają V8 isolates, nie pełnego Node.js runtime
+- CPU time limit: 10ms (free) / 50ms (paid) per request
+- Memory limit: 128MB
+- Niektóre Node.js APIs wymagają polyfilli lub refaktoryzacji
+
+#### Wymagane zmiany w projekcie
+
+1. **Zmiana adaptera Astro:**
+   ```bash
+   npx astro add cloudflare
+   ```
+   
+2. **Aktualizacja `astro.config.mjs`:**
+   ```javascript
+   import cloudflare from '@astrojs/cloudflare';
+   
+   export default defineConfig({
+     output: 'server',
+     adapter: cloudflare(),
+     // ... rest of config
+   });
+   ```
+
+3. **Konfiguracja Wrangler** (`wrangler.toml`):
+   ```toml
+   name = "10x-cards"
+   compatibility_date = "2024-12-01"
+   
+   [assets]
+   directory = "./dist"
+   ```
+
+4. **Weryfikacja kompatybilności:**
+   - Supabase client - wymaga sprawdzenia kompatybilności z Workers
+   - Middleware - dostosowanie do Workers runtime
+
+#### Struktura środowisk
+
+| Środowisko | Branch | URL | Przeznaczenie |
+|------------|--------|-----|---------------|
+| Production | `main` | `10x-cards.pages.dev` | Wersja produkcyjna |
+| Preview | PR branches | `<hash>.10x-cards.pages.dev` | Preview deployments dla PR |
+| Development | `develop` | `develop.10x-cards.pages.dev` | Środowisko deweloperskie |
+
+#### CI/CD Pipeline
+
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run build
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=10x-cards
+```
+
+#### Zmienne środowiskowe
+
+Konfiguracja w Cloudflare Dashboard > Pages > Settings > Environment Variables:
+
+| Zmienna | Środowisko | Opis |
+|---------|------------|------|
+| `SUPABASE_URL` | Production, Preview | URL projektu Supabase |
+| `SUPABASE_KEY` | Production, Preview | Klucz anon Supabase |
+| `OPENROUTER_API_KEY` | Production | Klucz API OpenRouter |
+
+#### Pricing (stan na 2024-12)
+
+| Plan | Requests | Bandwidth | Koszt | Komercyjne użycie |
+|------|----------|-----------|-------|-------------------|
+| Free | 100k/day | Unlimited | $0 | ✅ Dozwolone |
+| Paid | 10M+ | Unlimited | $5/mo | ✅ Dozwolone |
+
+#### Alternatywy (backup)
+
+W przypadku problemów z Cloudflare Workers (np. niekompatybilność runtime):
+1. **Railway** - pełna kompatybilność Node.js, dobra DX, $5/mo + usage
+2. **DigitalOcean App Platform** - przewidywalne koszty, pełny Node.js, $5-12/mo

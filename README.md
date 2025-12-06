@@ -10,6 +10,7 @@ An AI-powered web application designed to revolutionize the creation of educatio
 - [Tech Stack](#tech-stack)
 - [Getting Started Locally](#getting-started-locally)
 - [Available Scripts](#available-scripts)
+- [Deployment & Hosting](#deployment--hosting)
 - [Project Scope](#project-scope)
 - [Project Status](#project-status)
 - [License](#license)
@@ -28,7 +29,7 @@ The project is built with a modern tech stack:
 | **Backend & Database**| Supabase                                                       |
 | **AI Integration**    | OpenRouter.ai                                                  |
 | **Testing**           | Vitest, React Testing Library, Playwright, MSW                 |
-| **CI/CD & Hosting**   | GitHub Actions, DigitalOcean                                   |
+| **CI/CD & Hosting**   | GitHub Actions, Cloudflare Pages/Workers                       |
 
 ## Getting Started Locally
 
@@ -87,6 +88,26 @@ This project includes the following scripts defined in `package.json`:
 - `npm run format`: Formats the code using Prettier.
 - `npm run test`: Runs unit and integration tests with Vitest.
 - `npm run test:e2e`: Runs end-to-end tests with Playwright.
+
+## Deployment & Hosting
+
+The application is deployed on **Cloudflare Pages/Workers** using the official `@astrojs/cloudflare` adapter.
+
+### Why Cloudflare?
+
+- **Global edge network** - 300+ points of presence worldwide
+- **Generous free tier** - 100k requests/day, unlimited bandwidth
+- **Commercial use allowed** - No restrictions on monetization
+- **Official Astro support** - First-party adapter maintained by Astro team
+
+### Deployment
+
+Deployments are automated via GitHub Actions:
+
+- **Production**: Pushes to `main` branch deploy to production
+- **Development**: Pushes to `develop` branch deploy to staging
+
+For detailed deployment configuration, see [`.ai/tech-stack.md`](.ai/tech-stack.md).
 
 ## Project Scope
 
