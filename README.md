@@ -121,7 +121,8 @@ For detailed deployment configuration, see [`.ai/tech-stack.md`](.ai/tech-stack.
 
 ## Project Scope
 
-### In Scope (MVP)
+### In Scope (
+    MVP)
 
 -   **User Accounts**: Registration and login to manage flashcard decks.
 -   **AI Flashcard Generation**: Generate flashcards from text (up to 10,000 characters).
