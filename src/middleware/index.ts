@@ -4,16 +4,22 @@ import { createSupabaseServerInstance } from "../db/supabase.client.ts";
 // Public paths that don't require authentication
 const PUBLIC_PATHS = ["/login", "/register", "/reset-password", "/update-password"];
 
-export const onRequest = defineMiddleware(async ({ locals, cookies, url, request, redirect }, next) => {
-  // Skip auth check for public paths and auth API endpoints
-  if (PUBLIC_PATHS.includes(url.pathname) || url.pathname.startsWith("/api/auth/")) {
-    return next();
-  }
+// Auth API paths that don't require authentication
+const AUTH_API_PREFIX = "/api/auth/";
 
+export const onRequest = defineMiddleware(async ({ locals, cookies, url, request, redirect }, next) => {
+  // Always create supabase instance and attach to locals
   const supabase = createSupabaseServerInstance({
     cookies,
     headers: request.headers,
   });
+  locals.supabase = supabase;
+
+  // Skip auth check for public paths and auth API endpoints
+  if (PUBLIC_PATHS.includes(url.pathname) || url.pathname.startsWith(AUTH_API_PREFIX)) {
+    locals.user = null;
+    return next();
+  }
 
   // Get user session
   const {
@@ -25,10 +31,17 @@ export const onRequest = defineMiddleware(async ({ locals, cookies, url, request
       email: user.email,
       id: user.id,
     };
-  } else {
-    // Redirect to login for protected routes
-    return redirect("/login");
+    return next();
   }
 
-  return next();
+  // No authenticated user
+  locals.user = null;
+
+  // For API routes, let the handler return 401 (don't redirect)
+  if (url.pathname.startsWith("/api/")) {
+    return next();
+  }
+
+  // Redirect to login for protected page routes
+  return redirect("/login");
 });

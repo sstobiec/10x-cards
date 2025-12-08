@@ -43,6 +43,11 @@ export const FlashcardRewersSchema = z
   .refine((val) => val.length > 0, "Rewers nie może być pusty");
 
 /**
+ * Schema for validating flashcard source
+ */
+export const FlashcardSourceSchema = z.enum(["manual", "ai-full", "ai-edited"]);
+
+/**
  * Combined schema for editing a flashcard
  */
 export const FlashcardEditSchema = z.object({
@@ -51,6 +56,37 @@ export const FlashcardEditSchema = z.object({
 });
 
 export type FlashcardEditFormData = z.infer<typeof FlashcardEditSchema>;
+
+// ============================================================================
+// API Request Schemas
+// ============================================================================
+
+/**
+ * Schema for creating a new flashcard
+ * POST /api/flashcard-sets/:setId/flashcards
+ */
+export const CreateFlashcardSchema = z.object({
+  avers: FlashcardAversSchema,
+  rewers: FlashcardRewersSchema,
+  source: FlashcardSourceSchema,
+});
+
+/**
+ * Schema for updating an existing flashcard
+ * PATCH /api/flashcards/:id
+ */
+export const UpdateFlashcardSchema = z.object({
+  avers: FlashcardAversSchema.optional(),
+  rewers: FlashcardRewersSchema.optional(),
+});
+
+/**
+ * Schema for toggling flashcard flag
+ * PATCH /api/flashcards/:id/flag
+ */
+export const ToggleFlashcardFlagSchema = z.object({
+  flagged: z.boolean(),
+});
 
 // ============================================================================
 // UI Helper Functions

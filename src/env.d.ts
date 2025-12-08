@@ -2,6 +2,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Database } from "./db/database.types.ts";
+import type { SupabaseClient } from "./db/supabase.client.ts";
 
 declare global {
   namespace App {
@@ -10,6 +11,7 @@ declare global {
         id: string;
         email: string | undefined;
       } | null;
+      supabase: SupabaseClient;
     }
   }
 }

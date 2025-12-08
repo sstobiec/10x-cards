@@ -1,7 +1,14 @@
 import type { AstroCookies } from "astro";
 import { createServerClient, type CookieOptionsWithName } from "@supabase/ssr";
+import type { SupabaseClient as BaseSupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../db/database.types.ts";
 import { SUPABASE_URL, SUPABASE_KEY } from "astro:env/server";
+
+/**
+ * Type alias for Supabase client with our Database schema
+ * Used by services and API handlers for type-safe database queries
+ */
+export type SupabaseClient = BaseSupabaseClient<Database>;
 
 export const cookieOptions: CookieOptionsWithName = {
   path: "/",
