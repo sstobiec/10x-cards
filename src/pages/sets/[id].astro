@@ -1,0 +1,45 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { SetEditor } from "@/components/sets/SetEditor";
+import {
+  getFlashcardSetById,
+  FlashcardSetNotFoundError,
+  FlashcardSetAccessDeniedError,
+} from "@/lib/flashcard-set.service";
+
+// Disable prerendering for this page (dynamic content)
+export const prerender = false;
+
+// Protect this route - only authenticated users can access
+const { user, supabase } = Astro.locals;
+
+if (!user) {
+  return Astro.redirect("/login");
+}
+
+// Get set ID from URL params
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect("/dashboard");
+}
+
+// Fetch the flashcard set with all flashcards
+let flashcardSet;
+try {
+  flashcardSet = await getFlashcardSetById(id, user.id, supabase);
+} catch (error) {
+  if (error instanceof FlashcardSetNotFoundError) {
+    return Astro.redirect("/dashboard?error=not_found");
+  }
+  if (error instanceof FlashcardSetAccessDeniedError) {
+    return Astro.redirect("/dashboard?error=access_denied");
+  }
+  // For other errors, redirect to dashboard with generic error
+  return Astro.redirect("/dashboard?error=unknown");
+}
+---
+
+<Layout title={`${flashcardSet.name} - 10x Cards`}>
+  <SetEditor client:load initialData={flashcardSet} />
+</Layout>
