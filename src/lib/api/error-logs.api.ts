@@ -52,4 +52,3 @@ export async function logError(
 
   return response.json();
 }
-

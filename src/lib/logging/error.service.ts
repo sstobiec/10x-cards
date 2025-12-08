@@ -113,6 +113,7 @@ export async function createErrorLog(
     }
 
     // Remove input_payload from response as per DTO definition
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { input_payload: _, ...response } = data;
     return response;
   } catch (error) {

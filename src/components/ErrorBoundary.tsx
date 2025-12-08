@@ -27,10 +27,9 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
-
     // Attempt to log the error to the server
     // We don't await this as we don't want to block the UI
+    // Errors are logged to the server, console logging is intentionally disabled for production
     logError({
       model: "client-react",
       error_type: error.name || "ReactError",
@@ -40,9 +39,9 @@ export class ErrorBoundary extends Component<Props, State> {
         url: window.location.href,
         userAgent: navigator.userAgent,
       },
-    }).catch((apiError) => {
-      // Fallback logging if API fails
-      console.warn("Failed to send error log to server:", apiError);
+    }).catch(() => {
+      // Silently fail if API logging fails
+      // In development, check network tab for error details
     });
   }
 
@@ -63,7 +62,7 @@ export class ErrorBoundary extends Component<Props, State> {
             Wystąpił nieoczekiwany błąd. Został on automatycznie zgłoszony do naszego zespołu.
           </p>
           <div className="flex gap-4">
-            <Button 
+            <Button
               onClick={() => this.setState({ hasError: false, error: null })}
               variant="outline"
               className="border-red-300 text-red-700 hover:bg-red-100"
@@ -86,4 +85,3 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
-
