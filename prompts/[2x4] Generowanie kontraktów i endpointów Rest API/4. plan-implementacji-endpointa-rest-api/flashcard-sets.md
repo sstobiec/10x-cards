@@ -5,7 +5,7 @@ Zanim zaczniemy, zapoznaj się z poniższymi informacjami:
 1. Route API specification:
 <route_api_specification>
 
-@api-plan.md (129-173) 
+@api-plan.md (59-223) 
 
 </route_api_specification>
 
@@ -18,17 +18,23 @@ Zanim zaczniemy, zapoznaj się z poniższymi informacjami:
 
 3. Definicje typów:
 <type_definitions>
-@types.ts 
+
+@src/types.ts  
+
 </type_definitions>
 
 3. Tech stack:
 <tech_stack>
-@tech-stack.md 
+
+@.ai/tech-stack.md  
+
 </tech_stack>
 
 4. Implementation rules:
 <implementation_rules>
-@shared.mdc @backend.mdc @astro.mdc 
+
+@.cursor/rules/shared.mdc  @.cursor/rules/backend.mdc  @.cursor/rules/astro.mdc  
+
 </implementation_rules>
 
 Twoim zadaniem jest stworzenie kompleksowego planu wdrożenia endpointu interfejsu API REST. Przed dostarczeniem ostatecznego planu użyj znaczników <analysis>, aby przeanalizować informacje i nakreślić swoje podejście. W tej analizie upewnij się, że:

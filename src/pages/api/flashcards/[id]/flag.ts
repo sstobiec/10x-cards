@@ -98,7 +98,6 @@ export const PATCH: APIRoute = async ({ params, request, locals }) => {
       );
     }
 
-    console.error("Error toggling flashcard flag:", error);
     return new Response(
       JSON.stringify({
         error: {

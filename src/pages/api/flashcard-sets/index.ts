@@ -1,14 +1,14 @@
 /**
  * API Endpoint: Flashcard Sets Management
  *
- * POST /api/flashcard-sets
+ * GET /api/flashcard-sets - List flashcard sets (paginated)
+ * POST /api/flashcard-sets - Create a new flashcard set
  *
  * Creates a new flashcard set with optional flashcards.
  * The operation is transactional - either all data is created or none.
  */
 
 import type { APIRoute } from "astro";
-import { z } from "zod";
 import type {
   CreateFlashcardSetRequestDTO,
   CreateFlashcardSetResponseDTO,
@@ -17,30 +17,116 @@ import type {
 } from "../../../types";
 import {
   createFlashcardSet,
+  listFlashcardSets,
   FlashcardSetNameConflictError,
   FlashcardSetTransactionError,
+  FlashcardSetOperationError,
 } from "../../../lib/flashcard-set.service";
+import { FlashcardSetQuerySchema, CreateFlashcardSetSchema } from "../../../lib/validation/flashcard-sets";
 import { createSupabaseServerInstance } from "../../../db/supabase.client";
 
 // Disable pre-rendering for this API route
 export const prerender = false;
 
-// Zod schema for flashcard validation
-const FlashcardCreateCommandSchema = z.object({
-  avers: z.string().min(1, "Front of flashcard cannot be empty").max(200, "Front cannot exceed 200 characters"),
-  rewers: z.string().min(1, "Back of flashcard cannot be empty").max(750, "Back cannot exceed 750 characters"),
-  source: z.enum(["manual", "ai-full", "ai-edited"], {
-    errorMap: () => ({ message: "Source must be one of: manual, ai-full, ai-edited" }),
-  }),
-});
+/**
+ * GET handler for listing flashcard sets
+ * Supports pagination via query params: limit, offset, sort
+ */
+export const GET: APIRoute = async ({ request, locals, cookies }) => {
+  // Authentication check
+  const user = locals.user;
+  if (!user) {
+    return new Response(
+      JSON.stringify({
+        error: {
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        },
+      } satisfies ErrorResponseDTO),
+      {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
 
-// Zod schema for request validation
-const CreateFlashcardSetRequestSchema = z.object({
-  name: z.string().min(1, "Name cannot be empty").max(100, "Name cannot exceed 100 characters"),
-  model: z.string().min(1, "Model cannot be empty").max(100, "Model cannot exceed 100 characters"),
-  generation_duration: z.number().int().min(0, "Generation duration must be a non-negative integer"),
-  flashcards: z.array(FlashcardCreateCommandSchema).optional(),
-});
+  // Parse query parameters
+  const url = new URL(request.url);
+  const queryParams = {
+    limit: url.searchParams.get("limit") ?? undefined,
+    offset: url.searchParams.get("offset") ?? undefined,
+    sort: url.searchParams.get("sort") ?? undefined,
+  };
+
+  // Validate query parameters
+  const validation = FlashcardSetQuerySchema.safeParse(queryParams);
+  if (!validation.success) {
+    const errors = validation.error.flatten();
+    return new Response(
+      JSON.stringify({
+        error: {
+          code: "VALIDATION_ERROR",
+          message: "Invalid query parameters",
+          details: errors.fieldErrors,
+        },
+      } satisfies ErrorResponseDTO),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  // Create Supabase client instance
+  const supabase = createSupabaseServerInstance({
+    cookies,
+    headers: request.headers,
+  });
+
+  try {
+    // Call service to list flashcard sets
+    const result = await listFlashcardSets(user.id, validation.data, supabase);
+
+    return new Response(JSON.stringify(result), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    // Handle operation errors
+    if (error instanceof FlashcardSetOperationError) {
+      // eslint-disable-next-line no-console
+      console.error("Flashcard set operation error:", error);
+      return new Response(
+        JSON.stringify({
+          error: {
+            code: "OPERATION_FAILED",
+            message: "Failed to retrieve flashcard sets",
+          },
+        } satisfies ErrorResponseDTO),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Handle all other unexpected errors
+    // eslint-disable-next-line no-console
+    console.error("Unexpected error listing flashcard sets:", error);
+    return new Response(
+      JSON.stringify({
+        error: {
+          code: "INTERNAL_ERROR",
+          message: error instanceof Error ? error.message : "An unexpected error occurred",
+        },
+      } satisfies ErrorResponseDTO),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+};
 
 /**
  * POST handler for creating flashcard sets
@@ -91,7 +177,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
   }
 
   // Validate request body with Zod
-  const validation = CreateFlashcardSetRequestSchema.safeParse(requestBody);
+  const validation = CreateFlashcardSetSchema.safeParse(requestBody);
   if (!validation.success) {
     const errors = validation.error.flatten();
     return new Response(

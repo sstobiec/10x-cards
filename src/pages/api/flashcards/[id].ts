@@ -98,7 +98,6 @@ export const PATCH: APIRoute = async ({ params, request, locals }) => {
       );
     }
 
-    console.error("Error updating flashcard:", error);
     return new Response(
       JSON.stringify({
         error: {
@@ -169,7 +168,6 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
       );
     }
 
-    console.error("Error deleting flashcard:", error);
     return new Response(
       JSON.stringify({
         error: {

@@ -3,15 +3,15 @@ Twoim zadaniem jest wdrożenie endpointa interfejsu API REST w oparciu o podany 
 Najpierw dokładnie przejrzyj dostarczony plan wdrożenia:
 
 <implementation_plan>
-@flashcard-sets-endpoint-implementation-plan.md 
+@.ai/flashcard-sets-endpoint-implementation-plan.md  
 </implementation_plan>
 
 <types>
-@types.ts 
+@src/types.ts  
 </types>
 
 <implementation_rules>
-@shared.mdc @backend.mdc @astro.mdc 
+@.cursor/rules/shared.mdc  @.cursor/rules/backend.mdc  @.cursor/rules/astro.mdc  
 </implementation_rules>
 
 <implementation_approach>

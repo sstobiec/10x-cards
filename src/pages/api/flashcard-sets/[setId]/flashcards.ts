@@ -93,7 +93,6 @@ export const POST: APIRoute = async ({ params, request, locals }) => {
       );
     }
 
-    console.error("Error creating flashcard:", error);
     return new Response(
       JSON.stringify({
         error: {
