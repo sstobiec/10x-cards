@@ -4,6 +4,7 @@ import { LoadingSpinner } from "./LoadingSpinner";
 import { ErrorDisplay } from "./ErrorDisplay";
 import { ReviewSection } from "./ReviewSection";
 import { SuccessDisplay } from "./SuccessDisplay";
+import { ErrorBoundary } from "../ErrorBoundary";
 
 /**
  * Main view component for the flashcard generation flow
@@ -18,6 +19,14 @@ import { SuccessDisplay } from "./SuccessDisplay";
  * Error states are handled throughout with ErrorDisplay
  */
 export function GenerationView() {
+  return (
+    <ErrorBoundary>
+      <GenerationViewContent />
+    </ErrorBoundary>
+  );
+}
+
+function GenerationViewContent() {
   const {
     state,
     text,
