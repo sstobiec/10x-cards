@@ -4,44 +4,43 @@ Najpierw przejrzyj następujące informacje:
 
 1. Product Requirements Document (PRD):
 <prd>
-@.ai/prd.md   
+@.ai/prd.md  
 </prd>
 
 2. Opis widoku:
 <view_description>
-@ui-plan.md (64-79) 
-
+@ui-plan.md (80-92) 
 @ui-plan.md (94-111) 
 </view_description>
 
 3. User Stories:
 <user_stories>
-@prd.md (75-157) 
+@prd.md (60-93) 
 </user_stories>
 
 4. Endpoint Description:
-@api-plan.md (59-390) 
+@prd.md (75-176) 
 </endpoint_description>
 
 5. Endpoint Implementation:
 <endpoint_implementation>
-@src/pages/api/flashcard-sets/[setId]/flashcards.ts 
-@src/pages/api/flashcard-sets/[id].ts 
-@tests/e2e/pages/index.ts 
-@src/pages/api/flashcards/[id]/flag.ts 
-@src/pages/api/flashcards/[id].ts 
-@src/pages/api/flashcards/generate.ts 
-@src/pages/api/error-logs.ts 
+@src/pages/api/flashcard-sets/[setId]/flashcards.ts  
+@src/pages/api/flashcard-sets/[id].ts  
+@tests/e2e/pages/index.ts  
+@src/pages/api/flashcards/[id]/flag.ts  
+@src/pages/api/flashcards/[id]/flag.ts  
+@src/pages/api/flashcards/generate.ts  
+@src/pages/api/error-logs.ts  
 </endpoint_implementation>
 
 6. Type Definitions:
 <type_definitions>
-@src/types.ts   
+@src/types.ts  
 </type_definitions>
 
 7. Tech Stack:
 <tech_stack>
-@.ai/tech-stack.md   
+@.ai/tech-stack.md  
 </tech_stack>
 
 Przed utworzeniem ostatecznego planu wdrożenia przeprowadź analizę i planowanie wewnątrz tagów <implementation_breakdown> w swoim bloku myślenia. Ta sekcja może być dość długa, ponieważ ważne jest, aby być dokładnym.

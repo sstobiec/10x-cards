@@ -52,7 +52,13 @@ export default function Navigation({ userEmail }: NavigationProps) {
 
           {userEmail && (
             <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">{userEmail}</span>
+              <a
+                href="/profile"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                title="Przejdź do profilu"
+              >
+                {userEmail}
+              </a>
               <button
                 onClick={handleLogout}
                 disabled={isLoggingOut}
