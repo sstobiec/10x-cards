@@ -2,6 +2,7 @@ import { renderHook, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useGeneration } from "@/components/views/hooks/useGeneration";
 import type { GenerateFlashcardsResponseDTO } from "@/types";
+import { DEFAULT_MODEL_ID } from "@/lib/llm-models.config";
 
 // Mock global fetch
 const mockFetch = vi.fn();
@@ -121,7 +122,10 @@ describe("useGeneration", () => {
         "/api/flashcards/generate",
         expect.objectContaining({
           method: "POST",
-          body: JSON.stringify({ text: "Valid text content" }),
+          body: JSON.stringify({
+            text: "Valid text content",
+            model: DEFAULT_MODEL_ID,
+          }),
         })
       );
 
