@@ -121,11 +121,74 @@ export interface Database {
           },
         ];
       };
+      user_flashcard_progress: {
+        Row: {
+          id: string;
+          user_id: string;
+          flashcard_id: string;
+          state: Database["public"]["Enums"]["fsrs_card_state"];
+          stability: number;
+          difficulty: number;
+          elapsed_days: number;
+          scheduled_days: number;
+          reps: number;
+          lapses: number;
+          learning_steps: number;
+          last_review: string | null;
+          next_review: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          flashcard_id: string;
+          state?: Database["public"]["Enums"]["fsrs_card_state"];
+          stability?: number;
+          difficulty?: number;
+          elapsed_days?: number;
+          scheduled_days?: number;
+          reps?: number;
+          lapses?: number;
+          learning_steps?: number;
+          last_review?: string | null;
+          next_review?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          flashcard_id?: string;
+          state?: Database["public"]["Enums"]["fsrs_card_state"];
+          stability?: number;
+          difficulty?: number;
+          elapsed_days?: number;
+          scheduled_days?: number;
+          reps?: number;
+          lapses?: number;
+          learning_steps?: number;
+          last_review?: string | null;
+          next_review?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_flashcard_progress_flashcard_id";
+            columns: ["flashcard_id"];
+            isOneToOne: false;
+            referencedRelation: "flashcards";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<never, never>;
     Functions: Record<never, never>;
     Enums: {
       flashcard_source: "manual" | "ai-full" | "ai-edited";
+      fsrs_card_state: "new" | "learning" | "review" | "relearning";
     };
     CompositeTypes: Record<never, never>;
   };
@@ -247,6 +310,7 @@ export const Constants = {
   public: {
     Enums: {
       flashcard_source: ["manual", "ai-full", "ai-edited"],
+      fsrs_card_state: ["new", "learning", "review", "relearning"],
     },
   },
 } as const;

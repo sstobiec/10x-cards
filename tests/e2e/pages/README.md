@@ -25,6 +25,7 @@ tests/e2e/pages/
 Represents the `/generate` route where users input text to generate flashcards.
 
 **Key Methods:**
+
 - `goto()` - Navigate to the generation page
 - `fillText(text)` - Fill the text input with notes
 - `getCharacterCount()` - Get current character count
@@ -32,6 +33,7 @@ Represents the `/generate` route where users input text to generate flashcards.
 - `generateFlashcards(text)` - Complete flow: fill and generate
 
 **Locators:**
+
 - `textInput` - Main text input field (`data-testid="generation-text-input"`)
 - `characterCounter` - Character counter display (`data-testid="character-counter"`)
 - `generateButton` - Generate flashcards button (`data-testid="generate-flashcards-button"`)
@@ -42,6 +44,7 @@ Represents the `/generate` route where users input text to generate flashcards.
 Represents the review section where users can edit, delete, or flag flashcard proposals and save the set.
 
 **Key Methods:**
+
 - `getProposalsCount()` - Get number of proposals
 - `getAversText(index)` - Get front text of a flashcard
 - `getRewersText(index)` - Get back text of a flashcard
@@ -53,6 +56,7 @@ Represents the review section where users can edit, delete, or flag flashcard pr
 - `saveFlashcardSet(name)` - Complete flow: set name and save
 
 **Locators:**
+
 - `setNameInput` - Set name input field (`data-testid="set-name-input"`)
 - `saveSetButton` - Save set button (`data-testid="save-flashcard-set-button"`)
 - `proposalsList` - Container for all proposals (`data-testid="flashcard-proposals-list"`)
@@ -62,6 +66,7 @@ Represents the review section where users can edit, delete, or flag flashcard pr
 Represents the success screen displayed after saving a flashcard set.
 
 **Key Methods:**
+
 - `waitForSuccess()` - Wait for success screen to appear
 - `getSuccessMessage()` - Get the success message text
 - `getSetName()` - Get the saved set name
@@ -72,6 +77,7 @@ Represents the success screen displayed after saving a flashcard set.
 - `getSetId()` - Extract the set ID from the URL
 
 **Locators:**
+
 - `successDisplay` - Main success container (`data-testid="success-display"`)
 - `startLearningButton` - Start learning link (`data-testid="start-learning-button"`)
 - `generateAnotherSetButton` - Generate new set button (`data-testid="generate-another-set-button"`)
@@ -82,6 +88,7 @@ Represents the success screen displayed after saving a flashcard set.
 Represents error states throughout the application.
 
 **Key Methods:**
+
 - `waitForError()` - Wait for error display to appear
 - `getErrorTitle()` - Get the error title
 - `getErrorMessage()` - Get the error message
@@ -89,6 +96,7 @@ Represents error states throughout the application.
 - `clickReset()` - Click reset button
 
 **Locators:**
+
 - `errorDisplay` - Main error container (`data-testid="error-display"`)
 - `retryButton` - Retry action button (`data-testid="retry-button"`)
 - `resetButton` - Reset action button (`data-testid="reset-button"`)
@@ -141,4 +149,3 @@ test("complete flashcard generation flow", async ({ page }) => {
 - Test specifications: `tests/e2e/*.spec.ts`
 - Playwright config: `playwright.config.ts`
 - Component data-testids: `src/components/views/*.tsx`
-

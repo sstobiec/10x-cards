@@ -18,9 +18,11 @@
 </analysis>
 
 ## 1. Przegląd punktu końcowego
+
 Punkt końcowy `POST /api/error-logs` umożliwia uwierzytelnionym użytkownikom (oraz aplikacji działającej w ich imieniu) rejestrowanie błędów operacyjnych, ze szczególnym uwzględnieniem niepowodzeń generowania treści przez AI. Logi te są przechowywane w tabeli `error_logs` i służą do celów diagnostycznych.
 
 ## 2. Szczegóły żądania
+
 - **Metoda HTTP:** `POST`
 - **Struktura URL:** `/api/error-logs`
 - **Parametry:** Brak (ani w ścieżce, ani w zapytaniu)
@@ -33,6 +35,7 @@ Punkt końcowy `POST /api/error-logs` umożliwia uwierzytelnionym użytkownikom 
     - `input_payload` (JSON): Dane wejściowe, które spowodowały błąd (np. tekst źródłowy).
 
 ## 3. Wykorzystywane typy
+
 - **DTO (z `src/types.ts`):**
   - `CreateErrorLogRequestDTO`
   - `CreateErrorLogResponseDTO`
@@ -40,6 +43,7 @@ Punkt końcowy `POST /api/error-logs` umożliwia uwierzytelnionym użytkownikom 
 - **Service:** `src/lib/services/error-logs.ts` (do utworzenia).
 
 ## 3. Szczegóły odpowiedzi
+
 - **Kod sukcesu:** `201 Created`
 - **Format:** JSON (`CreateErrorLogResponseDTO`)
 - **Struktura:**
@@ -54,9 +58,10 @@ Punkt końcowy `POST /api/error-logs` umożliwia uwierzytelnionym użytkownikom 
     "updated_at": "ISO-8601 string"
   }
   ```
-  *Uwaga: `input_payload` nie jest zwracany w odpowiedzi.*
+  _Uwaga: `input_payload` nie jest zwracany w odpowiedzi._
 
 ## 4. Przepływ danych
+
 1.  **Klient** wysyła żądanie `POST` z danymi błędu.
 2.  **Astro Endpoint (`src/pages/api/error-logs.ts`)** odbiera żądanie.
 3.  **Weryfikacja sesji:** Sprawdzenie, czy użytkownik jest zalogowany (`context.locals.user`).
@@ -66,11 +71,13 @@ Punkt końcowy `POST /api/error-logs` umożliwia uwierzytelnionym użytkownikom 
 7.  **Odpowiedź:** Zwrócenie utworzonego obiektu do klienta.
 
 ## 5. Względy bezpieczeństwa
+
 - **Uwierzytelnianie:** Wymagany ważny token JWT/sesja Supabase. Żądania bez sesji otrzymują `401 Unauthorized`.
 - **Autoryzacja (RLS):** Polityki Row Level Security w bazie danych zapewniają, że użytkownicy mogą dodawać wpisy tylko przypisane do własnego ID.
 - **Walidacja wejścia:** Ścisła kontrola długości pól `model` i `error_type` (max 100) aby uniknąć błędów bazy danych.
 
 ## 6. Obsługa błędów
+
 - **400 Bad Request:**
   - Brakujące pola wymagane.
   - Przekroczenie limitu znaków.
@@ -82,11 +89,13 @@ Punkt końcowy `POST /api/error-logs` umożliwia uwierzytelnionym użytkownikom 
   - Nieoczekiwany wyjątek po stronie serwera.
 
 ## 7. Rozważania dotyczące wydajności
+
 - Operacja jest prostym wstawieniem (`INSERT`), powinna być bardzo szybka.
 - `input_payload` jest typu JSONB – należy unikać przesyłania w nim ekstremalnie dużych obiektów, choć Postgres radzi sobie z tym dobrze.
 - Endpoint powinien być asynchroniczny.
 
 ## 8. Etapy wdrożenia
+
 1.  **Utworzenie serwisu**:
     - Plik: `src/lib/services/error-logs.ts`
     - Implementacja funkcji `createErrorLog` przyjmującej klienta Supabase, userId i dane DTO.
@@ -97,4 +106,3 @@ Punkt końcowy `POST /api/error-logs` umożliwia uwierzytelnionym użytkownikom 
     - Integracja z serwisem.
 3.  **Weryfikacja**:
     - Testy manualne (np. przy użyciu `curl` lub klienta HTTP w IDE) w celu potwierdzenia poprawnego zapisu w bazie.
-

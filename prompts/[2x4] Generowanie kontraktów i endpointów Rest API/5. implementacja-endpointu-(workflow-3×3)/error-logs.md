@@ -3,7 +3,7 @@ Twoim zadaniem jest wdrożenie endpointa interfejsu API REST w oparciu o podany 
 Najpierw dokładnie przejrzyj dostarczony plan wdrożenia:
 
 <implementation_plan>
-@.ai/error-logs-endpoint-implementation-plan.md 
+@.ai/error-logs-endpoint-implementation-plan.md
 </implementation_plan>
 
 <types>
@@ -11,7 +11,7 @@ Najpierw dokładnie przejrzyj dostarczony plan wdrożenia:
 </types>
 
 <implementation_rules>
-@.cursor/rules/shared.mdc  @.cursor/rules/backend.mdc  @.cursor/rules/astro.mdc  
+@.cursor/rules/shared.mdc @.cursor/rules/backend.mdc @.cursor/rules/astro.mdc  
 </implementation_rules>
 
 <implementation_approach>

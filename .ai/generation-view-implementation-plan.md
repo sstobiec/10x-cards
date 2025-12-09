@@ -34,6 +34,7 @@ Komponenty zostaną zaimplementowane w React i TypeScript, a ich stylizacja opar
 ## 4. Szczegóły komponentów
 
 ### `GenerationView.tsx`
+
 - **Opis komponentu**: Główny komponent-kontener, który zarządza całym stanem i logiką przepływu generowania fiszek. Renderuje odpowiednie komponenty podrzędne w zależności od aktualnego etapu procesu (np. wprowadzanie tekstu, ładowanie, recenzja, sukces, błąd).
 - **Główne elementy**: Komponenty `GenerationForm`, `ReviewSection`, `SuccessDisplay`, `LoadingSpinner`, `ErrorDisplay`.
 - **Obsługiwane interakcje**: Brak bezpośrednich interakcji; orkiestruje stanem na podstawie zdarzeń z komponentów podrzędnych.
@@ -41,6 +42,7 @@ Komponenty zostaną zaimplementowane w React i TypeScript, a ich stylizacja opar
 - **Propsy**: Brak.
 
 ### `GenerationForm.tsx`
+
 - **Opis komponentu**: Odpowiada za zbieranie danych wejściowych od użytkownika. Zawiera pole tekstowe na notatki oraz przycisk inicjujący generowanie.
 - **Główne elementy**: `Textarea`, `Button` (z `shadcn/ui`), dynamiczny licznik znaków.
 - **Obsługiwane interakcje**: `onSubmit` formularza, `onChange` pola tekstowego.
@@ -55,6 +57,7 @@ Komponenty zostaną zaimplementowane w React i TypeScript, a ich stylizacja opar
   - `isLoading: boolean`
 
 ### `ReviewSection.tsx`
+
 - **Opis komponentu**: Pojawia się po pomyślnym wygenerowaniu fiszek. Umożliwia użytkownikowi nazwanie zestawu, przegląd i edycję propozycji oraz finalne zapisanie zestawu.
 - **Główne elementy**: `Input` (dla nazwy zestawu), komponent `FlashcardProposalList`, `Button` ("Zapisz zestaw").
 - **Obsługiwane interakcje**: `onSubmit` formularza zapisu.
@@ -73,6 +76,7 @@ Komponenty zostaną zaimplementowane w React i TypeScript, a ich stylizacja opar
   - `isSaving: boolean`
 
 ### `FlashcardProposalItem.tsx`
+
 - **Opis komponentu**: Reprezentuje pojedynczą, edytowalną propozycję fiszki na liście recenzji. Posiada tryb wyświetlania i edycji.
 - **Główne elementy**: Pola tekstowe (`Input`/`Textarea`) dla awersu i rewersu, przyciski akcji (Edytuj, Zapisz, Anuluj, Usuń, Oflaguj).
 - **Obsługiwane interakcje**: Edycja, usuwanie, oflagowanie fiszki.
@@ -92,26 +96,26 @@ Do implementacji widoku, oprócz istniejących DTO, potrzebne będą następują
 
 ```typescript
 // Typ reprezentujący ogólny stan widoku
-export type GenerationViewState = 
-  | 'idle'      // Stan początkowy
-  | 'generating'// Trwa generowanie fiszek
-  | 'reviewing' // Użytkownik przegląda i edytuje propozycje
-  | 'saving'    // Trwa zapisywanie zestawu
-  | 'success'   // Zestaw pomyślnie zapisany
-  | 'error';    // Wystąpił błąd
+export type GenerationViewState =
+  | "idle" // Stan początkowy
+  | "generating" // Trwa generowanie fiszek
+  | "reviewing" // Użytkownik przegląda i edytuje propozycje
+  | "saving" // Trwa zapisywanie zestawu
+  | "success" // Zestaw pomyślnie zapisany
+  | "error"; // Wystąpił błąd
 
 // Typ reprezentujący propozycję fiszki w stanie UI
 export interface FlashcardProposalViewModel {
   // Unikalny identyfikator po stronie klienta (np. uuidv4)
-  id: string; 
+  id: string;
   // Awers fiszki (pytanie)
-  avers: string; 
+  avers: string;
   // Rewers fiszki (odpowiedź)
   rewers: string;
   // Źródło pochodzenia fiszki
-  source: 'ai-full' | 'ai-edited'; 
+  source: "ai-full" | "ai-edited";
   // Czy fiszka została oflagowana jako słaba jakość
-  isFlagged: boolean; 
+  isFlagged: boolean;
 }
 
 // Typ reprezentujący błąd API do wyświetlenia w UI
@@ -135,6 +139,7 @@ export interface FlashcardCreateCommand {
 Cała logika i stan widoku zostaną zamknięte w niestandardowym hooku `useGeneration`. Takie podejście zapewni separację logiki od prezentacji i ułatwi testowanie.
 
 **Hook `useGeneration` będzie zarządzał:**
+
 - `state: GenerationViewState`: Aktualny stan maszyny stanów widoku.
 - `text: string`: Treść notatek wprowadzonych przez użytkownika.
 - `setName: string`: Nazwa tworzonego zestawu.
@@ -143,6 +148,7 @@ Cała logika i stan widoku zostaną zamknięte w niestandardowym hooku `useGener
 - `savedSetInfo: CreateFlashcardSetResponseDTO | null`: Informacje o zapisanym zestawie.
 
 **Hook `useGeneration` będzie udostępniał funkcje:**
+
 - `generateProposals()`: Wysyła żądanie do API w celu wygenerowania fiszek.
 - `saveFlashcardSet()`: Wysyła żądanie do API w celu zapisania zestawu.
 - `updateProposal()`: Aktualizuje treść propozycji w stanie.

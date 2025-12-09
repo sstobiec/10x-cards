@@ -1,16 +1,18 @@
 # API Endpoint Implementation Plan: Generate Flashcard Proposals
 
 ## 1. Przegląd punktu końcowego
+
 Ten punkt końcowy umożliwia generowanie propozycji fiszek na podstawie dostarczonego przez użytkownika tekstu. Wykorzystuje zewnętrzną usługę AI do analizy treści i ekstrakcji par pytanie-odpowiedź. Wygenerowane propozycje są zwracane w czasie rzeczywistym i nie są trwale zapisywane w bazie danych, służąc jedynie do podglądu i dalszej edycji przez użytkownika przed utworzeniem nowego zestawu fiszek.
 
 ## 2. Szczegóły żądania
+
 - **Metoda HTTP:** `POST`
 - **Struktura URL:** `/api/flashcards/generate`
 - **Ciało żądania (Request Body):**
   ```json
   {
     "text": "String of notes/content to generate flashcards from",
-    "model": "openai/gpt-4o" 
+    "model": "openai/gpt-4o"
   }
   ```
 - **Parametry:**
@@ -20,7 +22,9 @@ Ten punkt końcowy umożliwia generowanie propozycji fiszek na podstawie dostarc
     - `model` (string): Nazwa modelu AI do użycia. Jeśli pominięty, zostanie użyty domyślny model skonfigurowany w systemie.
 
 ## 3. Wykorzystywane typy
+
 Do implementacji tego punktu końcowego niezbędne będą następujące typy zdefiniowane w `src/types.ts`:
+
 - `GenerateFlashcardsRequestDTO`: Do walidacji i typowania przychodzącego ciała żądania.
 - `GenerateFlashcardsResponseDTO`: Jako model pomyślnej odpowiedzi.
 - `FlashcardProposalDTO`: Reprezentuje pojedynczą parę fiszek (awers/rewers) w odpowiedzi.
@@ -28,6 +32,7 @@ Do implementacji tego punktu końcowego niezbędne będą następujące typy zde
 - `CreateErrorLogRequestDTO`: Do przygotowania obiektu błędu przed zapisaniem go w bazie danych.
 
 ## 4. Szczegóły odpowiedzi
+
 - **Odpowiedź sukcesu (200 OK):**
   ```json
   {
@@ -49,6 +54,7 @@ Do implementacji tego punktu końcowego niezbędne będą następujące typy zde
   - `503 Service Unavailable`: Usługa AI jest tymczasowo niedostępna.
 
 ## 5. Przepływ danych
+
 1.  Użytkownik wysyła żądanie `POST` z tekstem do `/api/flashcards/generate`.
 2.  Middleware Astro (`src/middleware/index.ts`) weryfikuje token JWT i dołącza sesję użytkownika do `Astro.locals`.
 3.  Handler endpointu (`src/pages/api/flashcards/generate.ts`) odbiera żądanie.
@@ -67,24 +73,29 @@ Do implementacji tego punktu końcowego niezbędne będą następujące typy zde
     - Handler zwraca odpowiedni kod błędu (`500` lub `503`) do klienta.
 
 ## 6. Względy bezpieczeństwa
+
 - **Uwierzytelnianie:** Dostęp do punktu końcowego jest chroniony i wymaga prawidłowego tokenu JWT. Middleware Astro jest odpowiedzialne za weryfikację tokenu.
 - **Autoryzacja:** Każdy uwierzytelniony użytkownik może korzystać z tej funkcji. Nie ma dodatkowych ograniczeń opartych na rolach.
 - **Walidacja danych wejściowych:** Zastosowanie Zod do walidacji ciała żądania, w szczególności ograniczenie długości pola `text` do 10 000 znaków, chroni przed nadmiernym zużyciem zasobów i potencjalnymi atakami.
 - **Ochrona kluczy API:** Klucz do usługi AI musi być przechowywany jako zmienna środowiskowa (`OPENROUTER_API_KEY`) i dostępny tylko po stronie serwera.
 
 ## 7. Obsługa błędów
+
 Punkt końcowy będzie obsługiwał błędy w sposób kontrolowany, zwracając odpowiednie kody statusu HTTP:
+
 - `400 Bad Request`: Zwracany, gdy walidacja Zod nie powiedzie się (np. brak pola `text`, przekroczenie limitu znaków).
 - `401 Unauthorized`: Zwracany przez middleware, gdy token jest nieprawidłowy lub go brakuje.
 - `500 Internal Server Error`: Zwracany w przypadku nieoczekiwanego błędu po stronie serwera, błędu parsowania odpowiedzi od AI, lub gdy zapis do tabeli `error_logs` nie powiedzie się. Szczegóły błędu zostaną zalogowane.
 - `503 Service Unavailable`: Zwracany, gdy zewnętrzna usługa AI jest niedostępna. Błąd również zostanie zalogowany.
 
 ## 8. Rozważania dotyczące wydajności
+
 - **Czas odpowiedzi:** Czas odpowiedzi jest bezpośrednio zależny od zewnętrznej usługi AI. Może wynosić od kilku do kilkunastu sekund. Należy zaimplementować po stronie klienta odpowiedni interfejs użytkownika (np. wskaźnik ładowania), aby poinformować o trwającym procesie.
 - **Timeout:** Należy rozważyć ustawienie rozsądnego `timeout` dla żądania do usługi AI, aby uniknąć zbyt długiego oczekiwania w przypadku problemów z usługą.
 - **Asynchroniczność:** Operacja jest z natury asynchroniczna. Cały przepływ po stronie serwera jest bezblokowy.
 
 ## 9. Etapy wdrożenia
+
 1.  **Utworzenie serwisu AI:**
     - Stworzyć plik `src/lib/ai/generation.service.ts`.
     - Zaimplementować w nim funkcję `generateFlashcards`, która będzie komunikować się z API OpenRouter.ai, używając klucza API ze zmiennych środowiskowych.

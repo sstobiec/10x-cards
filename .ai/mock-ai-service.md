@@ -7,6 +7,7 @@ The mock AI service provides a development-friendly alternative to the real Open
 ## Features
 
 ### 1. Automatic Detection
+
 - **Development Mode**: Mock is automatically enabled when running `npm run dev`
 - **Manual Override**: Set `USE_MOCK_AI=true` in `.env` to force mock mode in any environment
 
@@ -15,18 +16,22 @@ The mock AI service provides a development-friendly alternative to the real Open
 The mock service uses multiple strategies to generate realistic flashcards:
 
 #### a) Concept-Based Recognition
+
 Detects common programming concepts in the input text and generates appropriate flashcards:
+
 - REST, API, JavaScript, TypeScript, React
 - Database, Algorithm, Functions
 - And more...
 
 #### b) Text Analysis
+
 - Splits text into meaningful chunks (paragraphs, sentences)
 - Generates questions based on content structure
 - Extracts relevant answers from the text
 - Creates 5-20 flashcards per request
 
 #### c) Realistic Behavior
+
 - Simulates network latency (800-2500ms)
 - Returns proper `FlashcardProposalDTO[]` format
 - Handles edge cases (empty text, very short text)
@@ -34,6 +39,7 @@ Detects common programming concepts in the input text and generates appropriate 
 ### 3. Model Compatibility
 
 The mock service accepts the same parameters as the real service:
+
 ```typescript
 generateFlashcardsMock(text: string, model?: string)
 ```
@@ -69,12 +75,14 @@ curl -X POST http://localhost:4321/api/flashcards/generate \
 ## Example Output
 
 **Input:**
+
 ```
 REST is an architectural style for designing networked applications.
 It uses HTTP methods and stateless communication.
 ```
 
 **Output:**
+
 ```json
 {
   "flashcard_proposals": [
@@ -95,6 +103,7 @@ It uses HTTP methods and stateless communication.
 ## Implementation Details
 
 ### File Structure
+
 ```
 src/lib/ai/
 ├── generation.service.ts       # Real OpenRouter API service
@@ -102,6 +111,7 @@ src/lib/ai/
 ```
 
 ### Endpoint Integration
+
 ```typescript
 // src/pages/api/flashcards/generate.ts
 
@@ -142,16 +152,18 @@ When you're ready to use the real OpenRouter API:
 ## Troubleshooting
 
 ### Mock not working
+
 - Check that `import.meta.env.DEV` is `true` in development
 - Verify the endpoint is importing from `generation.service.mock.ts`
 - Check console logs for which service is being used
 
 ### Always using real API
+
 - Ensure you're running `npm run dev` not `npm run build && npm run preview`
 - Check if `USE_MOCK_AI` is explicitly set to `false` in `.env`
 
 ### Flashcards quality is poor
+
 - Remember: Mock uses simple text processing
 - For better quality, use the real OpenRouter API
 - Mock is intended for development/testing only
-

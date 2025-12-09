@@ -23,13 +23,13 @@ An AI-powered web application designed to revolutionize the creation of educatio
 
 The project is built with a modern tech stack:
 
-| Category              | Technology                                                     |
-| --------------------- | -------------------------------------------------------------- |
-| **Frontend**          | Astro 5, React 19, TypeScript 5, Tailwind CSS 4, shadcn/ui     |
-| **Backend & Database**| Supabase                                                       |
-| **AI Integration**    | OpenRouter.ai                                                  |
-| **Testing**           | Vitest, React Testing Library, Playwright, MSW                 |
-| **CI/CD & Hosting**   | GitHub Actions, Cloudflare Pages/Workers                       |
+| Category               | Technology                                                 |
+| ---------------------- | ---------------------------------------------------------- |
+| **Frontend**           | Astro 5, React 19, TypeScript 5, Tailwind CSS 4, shadcn/ui |
+| **Backend & Database** | Supabase                                                   |
+| **AI Integration**     | OpenRouter.ai                                              |
+| **Testing**            | Vitest, React Testing Library, Playwright, MSW             |
+| **CI/CD & Hosting**    | GitHub Actions, Cloudflare Pages/Workers                   |
 
 ## Getting Started Locally
 
@@ -43,22 +43,27 @@ To run the project locally, follow these steps:
 ### Installation
 
 1.  **Clone the repository:**
+
     ```bash
     git clone https://github.com/your-username/10x-cards.git
     cd 10x-cards
     ```
 
 2.  **Install dependencies:**
+
     ```bash
     npm install
     ```
 
 3.  **Set up environment variables:**
     Create a `.env` file in the root of the project and add the necessary environment variables. You can copy the example file:
+
     ```bash
     cp .env.example .env
     ```
+
     You will need to provide your own credentials for services like Supabase.
+
     ```env
     # Supabase (Required)
     SUPABASE_URL=your_supabase_url
@@ -67,7 +72,7 @@ To run the project locally, follow these steps:
     # OpenRouter.ai (Optional - Mock AI is used by default in development)
     OPENROUTER_API_KEY=your_openrouter_api_key
     ```
-    
+
     **Note:** The application uses a mock AI service by default in development mode, so you can start developing immediately without an OpenRouter API key. To use the real AI service, add your `OPENROUTER_API_KEY` to the `.env` file and set `USE_MOCK_AI=false`.
 
 4.  **Run the development server:**
@@ -81,21 +86,25 @@ To run the project locally, follow these steps:
 This project includes the following scripts defined in `package.json`:
 
 ### Development
+
 - `npm run dev`: Starts the Astro development server
 - `npm run build`: Builds the application for production
 
 ### Preview & Deployment (Cloudflare)
+
 - `npm run preview`: Previews production build with Wrangler (Cloudflare Workers)
 - `npm run preview:local`: Previews production build locally without Cloudflare services
 - `npm run deploy`: Builds and deploys to Cloudflare Workers (production)
 - `npm run deploy:preview`: Builds and deploys to preview environment
 
 ### Code Quality
+
 - `npm run lint`: Lints the codebase for errors
 - `npm run lint:fix`: Lints and automatically fixes issues
 - `npm run format`: Formats the code using Prettier
 
 ### Testing
+
 - `npm run test`: Runs unit and integration tests with Vitest
 - `npm run test:e2e`: Runs end-to-end tests with Playwright
 
@@ -123,21 +132,21 @@ For detailed deployment configuration, see [`.ai/tech-stack.md`](.ai/tech-stack.
 
 ### In Scope (MVP)
 
--   **User Accounts**: Registration and login to manage flashcard decks.
--   **AI Flashcard Generation**: Generate flashcards from text (up to 10,000 characters).
--   **Manual Creation**: Manually add, edit, and delete flashcards.
--   **Deck Management**: A dashboard to view, edit, and delete decks.
--   **Spaced Repetition**: Integration with an open-source library for spaced repetition.
--   **Learning Interface**: A simple interface for study sessions.
+- **User Accounts**: Registration and login to manage flashcard decks.
+- **AI Flashcard Generation**: Generate flashcards from text (up to 10,000 characters).
+- **Manual Creation**: Manually add, edit, and delete flashcards.
+- **Deck Management**: A dashboard to view, edit, and delete decks.
+- **Spaced Repetition**: Integration with an open-source library for spaced repetition.
+- **Learning Interface**: A simple interface for study sessions.
 
 ### Out of Scope
 
--   Advanced, proprietary repetition algorithms (e.g., SuperMemo/Anki style).
--   Importing files in various formats (PDF, DOCX).
--   Sharing and publishing flashcard decks.
--   Integrations with external educational platforms.
--   Dedicated mobile applications.
--   Monetization and commercial features.
+- Advanced, proprietary repetition algorithms (e.g., SuperMemo/Anki style).
+- Importing files in various formats (PDF, DOCX).
+- Sharing and publishing flashcard decks.
+- Integrations with external educational platforms.
+- Dedicated mobile applications.
+- Monetization and commercial features.
 
 ## Project Status
 

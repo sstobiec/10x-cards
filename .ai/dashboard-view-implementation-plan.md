@@ -1,9 +1,11 @@
 # Plan implementacji widoku Pulpitu (DashboardView)
 
 ## 1. Przegląd
+
 Widok Pulpitu (`DashboardView`) stanowi centralny punkt aplikacji dla zalogowanego użytkownika. Jego głównym celem jest umożliwienie zarządzania zestawami fiszek (tworzenie, przeglądanie, edycja, usuwanie) oraz szybkie przejście do trybu nauki. Widok obsługuje paginację oraz stany ładowania, błędu i pustej listy.
 
 ## 2. Routing widoku
+
 - **Ścieżka:** `/dashboard`
 - **Dostęp:** Tylko dla zalogowanych użytkowników (chronione przez middleware/weryfikację sesji w Astro).
 
@@ -27,16 +29,19 @@ src/pages/dashboard.astro (Strona Astro - entry point)
 ## 4. Szczegóły komponentów
 
 ### `DashboardPage` (`src/pages/dashboard.astro`)
+
 - **Opis:** Główny plik strony Astro. Weryfikuje sesję użytkownika po stronie serwera i przekazuje dane użytkownika do kontenera React.
 - **Główne elementy:** `BaseLayout`, `DashboardContainer`.
 - **Propsy:** Brak (pobiera `user` z `Astro.locals`).
 
 ### `DashboardContainer` (`src/components/dashboard/DashboardContainer.tsx`)
+
 - **Opis:** Główny komponent logiki (Smart Component). Zarządza stanem pobierania zestawów, paginacją i obsługą globalnych akcji.
 - **Typy:** Zarządza stanem zgodnym z `PaginatedResponseDTO<FlashcardSetListItemDTO>`.
 - **Interakcje:** Inicjalne pobranie danych, obsługa zmiany strony, odświeżenie listy po usunięciu.
 
 ### `CreateSetDialog` (`src/components/dashboard/CreateSetDialog.tsx`)
+
 - **Opis:** Modal z formularzem do tworzenia nowego, pustego zestawu manualnego.
 - **Główne elementy:** `Dialog` (Shadcn), `Input`, `Button`, `Label`.
 - **Walidacja:**
@@ -44,19 +49,23 @@ src/pages/dashboard.astro (Strona Astro - entry point)
 - **Interakcje:** Wpisanie nazwy, wysłanie formularza, obsługa błędu (np. duplikat nazwy), przekierowanie po sukcesie.
 
 ### `FlashcardSetList` (`src/components/dashboard/FlashcardSetList.tsx`)
+
 - **Opis:** Komponent prezentacyjny wyświetlający siatkę kart.
 - **Propsy:** `sets: FlashcardSetListItemDTO[]`, `onDelete: (id: string) => Promise<void>`.
 
 ### `FlashcardSetCard` (`src/components/dashboard/FlashcardSetCard.tsx`)
+
 - **Opis:** Karta prezentująca pojedynczy zestaw.
 - **Główne elementy:** `Card` (Shadcn), `Badge` (AI/Manual), przyciski akcji (Ucz się, Edytuj, Usuń).
 - **Propsy:** `set: FlashcardSetListItemDTO`, `onDelete: (id: string) => Promise<void>`.
 
 ### `DeleteSetAlertDialog` (`src/components/dashboard/DeleteSetAlertDialog.tsx`)
+
 - **Opis:** Modal potwierdzający nieodwracalne usunięcie zestawu.
 - **Główne elementy:** `AlertDialog` (Shadcn).
 
 ### `EmptyState` (`src/components/dashboard/EmptyState.tsx`)
+
 - **Opis:** Wyświetlany, gdy użytkownik nie ma żadnych zestawów. Zawiera CTA do stworzenia pierwszego zestawu.
 
 ## 5. Typy
@@ -65,11 +74,7 @@ Wykorzystujemy istniejące typy z `src/types.ts`. Dodatkowo definiujemy typy pro
 
 ```typescript
 // Import z src/types.ts
-import type { 
-  FlashcardSetListItemDTO, 
-  PaginatedResponseDTO, 
-  PaginationMetaDTO 
-} from '@/types';
+import type { FlashcardSetListItemDTO, PaginatedResponseDTO, PaginationMetaDTO } from "@/types";
 
 // Typy lokalne (stan)
 interface DashboardState {
@@ -97,13 +102,15 @@ Zalecane jest stworzenie custom hooka `useDashboardSets` w `src/hooks/useDashboa
 ## 7. Integracja API
 
 ### Pobieranie listy zestawów
+
 - **Endpoint:** `GET /api/flashcard-sets`
 - **Query Params:** `limit=12` (domyślnie), `offset=(page-1)*limit`.
 - **Oczekiwana odpowiedź:** `PaginatedResponseDTO<FlashcardSetListItemDTO>`.
 
 ### Tworzenie zestawu manualnego
+
 - **Endpoint:** `POST /api/flashcard-sets`
-- **Body:** 
+- **Body:**
   ```json
   {
     "name": "Nazwa zestawu",
@@ -115,6 +122,7 @@ Zalecane jest stworzenie custom hooka `useDashboardSets` w `src/hooks/useDashboa
 - **Sukces:** Przekierowanie do `/sets/[id]/edit`.
 
 ### Usuwanie zestawu
+
 - **Endpoint:** `DELETE /api/flashcard-sets/[id]`
 - **Sukces:** Kod 204. Wymagane odświeżenie listy.
 
@@ -152,4 +160,3 @@ Zalecane jest stworzenie custom hooka `useDashboardSets` w `src/hooks/useDashboa
 7. **Paginacja:** Dodanie obsługi zmiany stron i obliczania offsetu.
 8. **Empty State:** Dodanie obsługi stanu pustego.
 9. **Testy manualne:** Weryfikacja przepływów (CRUD, paginacja, błędy).
-

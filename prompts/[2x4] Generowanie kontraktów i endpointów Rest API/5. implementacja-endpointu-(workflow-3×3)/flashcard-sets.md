@@ -11,7 +11,7 @@ Najpierw dokładnie przejrzyj dostarczony plan wdrożenia:
 </types>
 
 <implementation_rules>
-@.cursor/rules/shared.mdc  @.cursor/rules/backend.mdc  @.cursor/rules/astro.mdc  
+@.cursor/rules/shared.mdc @.cursor/rules/backend.mdc @.cursor/rules/astro.mdc  
 </implementation_rules>
 
 <implementation_approach>

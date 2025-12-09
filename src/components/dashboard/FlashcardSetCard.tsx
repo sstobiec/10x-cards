@@ -68,7 +68,7 @@ export function FlashcardSetCard({ set, onDelete, isDeleting }: FlashcardSetCard
 
         <CardFooter className="flex gap-2 border-t pt-3">
           <Button variant="default" size="sm" className="flex-1 gap-1.5" asChild>
-            <a href={`/sets/${set.id}/study`}>
+            <a href={`/study/${set.id}`}>
               <BookOpen className="h-4 w-4" />
               Ucz się
             </a>

@@ -86,7 +86,7 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild variant="default" size="lg">
-              <a href={`/sets/${savedSetInfo.id}`} data-testid="start-learning-button">
+              <a href={`/study/${savedSetInfo.id}`} data-testid="start-learning-button">
                 <svg
                   className="h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"

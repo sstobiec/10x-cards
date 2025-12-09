@@ -27,7 +27,9 @@ tests/e2e/
 ## 🎯 Test Scenario Coverage
 
 ### Main Flow Test
+
 Tests the complete user journey:
+
 1. Navigate to `/generate`
 2. Fill text input with notes
 3. Verify character counter
@@ -39,12 +41,14 @@ Tests the complete user journey:
 9. Verify success screen
 
 ### Component Interaction Tests
+
 - **Editing flashcards**: Edit avers and rewers content
 - **Flagging flashcards**: Mark flashcards as low quality
 - **Deleting flashcards**: Remove unwanted proposals
 - **Validation**: Test form validation rules
 
 ### Navigation Tests
+
 - Navigate from success back to generation form
 - Button enabled/disabled states
 - URL verification
@@ -52,11 +56,13 @@ Tests the complete user journey:
 ## 🏷️ Data-testid Reference
 
 ### Generation Form
+
 - `generation-text-input` - Main text input field
 - `character-counter` - Character count display
 - `generate-flashcards-button` - Generate button
 
 ### Review Section
+
 - `flashcard-proposals-list` - Container for all proposals
 - `flashcard-proposal-item` - Individual flashcard
 - `flashcard-avers` - Front of flashcard (view mode)
@@ -72,17 +78,20 @@ Tests the complete user journey:
 - `save-flashcard-set-button` - Save set button
 
 ### Success Screen
+
 - `success-display` - Main success container
 - `start-learning-button` - Link to learning mode
 - `generate-another-set-button` - Return to generation
 - `view-all-sets-button` - View all sets link
 
 ### Error Screen
+
 - `error-display` - Error container
 - `retry-button` - Retry action
 - `reset-button` - Reset to initial state
 
 ### Loading State
+
 - `loading-spinner` - Loading spinner container
 - `loading-message` - Loading message text
 
@@ -175,6 +184,7 @@ await verifyUrl(page, /\/generate/);
 ## 🎨 Best Practices
 
 ### DO ✅
+
 - **Use Page Object Model** - All interactions through POM classes
 - **Use data-testid** - Stable selectors that don't change with styling
 - **Use test fixtures** - Reusable test data from `fixtures/test-data.ts`
@@ -184,6 +194,7 @@ await verifyUrl(page, /\/generate/);
 - **Name tests descriptively** - Clear test names that explain what's being tested
 
 ### DON'T ❌
+
 - **Don't use CSS selectors directly** - Use `data-testid` instead
 - **Don't use arbitrary timeouts** - Use Playwright's auto-waiting
 - **Don't duplicate code** - Extract common operations to page objects
@@ -193,21 +204,25 @@ await verifyUrl(page, /\/generate/);
 ## 🔍 Troubleshooting
 
 ### Tests are flaky
+
 - Check if you're using proper waits (not `waitForTimeout`)
 - Ensure elements are stable before interaction
 - Use `waitFor({ state: 'stable' })` for animated elements
 
 ### Can't find element
+
 - Verify `data-testid` attribute exists in component
 - Check if element is hidden or disabled
 - Use debug mode to inspect the page state
 
 ### Slow test execution
+
 - Use `fullyParallel: true` in config (already set)
 - Mock API calls when appropriate
 - Avoid unnecessary waits
 
 ### TypeScript errors
+
 - Ensure all page objects are properly typed
 - Import types from Playwright: `import { Page, Locator } from "@playwright/test"`
 - Check that all methods return appropriate types
@@ -215,6 +230,7 @@ await verifyUrl(page, /\/generate/);
 ## 📊 Test Coverage
 
 Current test coverage includes:
+
 - ✅ Full generation flow (happy path)
 - ✅ Flashcard editing
 - ✅ Flashcard flagging
@@ -244,6 +260,7 @@ Current test coverage includes:
 ## 🤝 Contributing
 
 When adding new features:
+
 1. Add appropriate `data-testid` attributes to components
 2. Create or update POM classes in `tests/e2e/pages/`
 3. Add test data to `tests/e2e/fixtures/test-data.ts`
@@ -253,7 +270,7 @@ When adding new features:
 ## 📞 Support
 
 For questions or issues:
+
 - Check the [Playwright Documentation](https://playwright.dev/)
 - Review existing test examples in `tests/e2e/`
 - Consult the POM documentation in `tests/e2e/pages/README.md`
-

@@ -69,18 +69,18 @@ npm run test:e2e:report
 ## Struktura testów jednostkowych
 
 ```typescript
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 
-describe('Feature Name', () => {
-  it('should do something specific', () => {
+describe("Feature Name", () => {
+  it("should do something specific", () => {
     // Arrange
-    const input = 'test';
-    
+    const input = "test";
+
     // Act
     const result = someFunction(input);
-    
+
     // Assert
-    expect(result).toBe('expected');
+    expect(result).toBe("expected");
   });
 });
 ```
@@ -97,13 +97,13 @@ describe('ComponentName', () => {
     render(<ComponentName />);
     expect(screen.getByText('Expected text')).toBeInTheDocument();
   });
-  
+
   it('should handle user interaction', async () => {
     const user = userEvent.setup();
     render(<ComponentName />);
-    
+
     await user.click(screen.getByRole('button'));
-    
+
     expect(screen.getByText('Updated text')).toBeInTheDocument();
   });
 });
@@ -114,14 +114,14 @@ describe('ComponentName', () => {
 ### Podstawowa struktura
 
 ```typescript
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('Feature Name', () => {
-  test('should perform user flow', async ({ page }) => {
-    await page.goto('/');
-    
+test.describe("Feature Name", () => {
+  test("should perform user flow", async ({ page }) => {
+    await page.goto("/");
+
     await page.click('button[type="submit"]');
-    
+
     await expect(page).toHaveURL(/\/success/);
   });
 });
@@ -130,10 +130,10 @@ test.describe('Feature Name', () => {
 ### Użycie Page Object Model
 
 ```typescript
-import { test, expect } from '@playwright/test';
-import { GenerationPage, ReviewPage, SuccessPage } from './pages';
+import { test, expect } from "@playwright/test";
+import { GenerationPage, ReviewPage, SuccessPage } from "./pages";
 
-test.describe('Flashcard Generation Flow', () => {
+test.describe("Flashcard Generation Flow", () => {
   let generationPage: GenerationPage;
   let reviewPage: ReviewPage;
   let successPage: SuccessPage;
@@ -143,18 +143,18 @@ test.describe('Flashcard Generation Flow', () => {
     generationPage = new GenerationPage(page);
     reviewPage = new ReviewPage(page);
     successPage = new SuccessPage(page);
-    
+
     // Navigate to starting page
     await generationPage.goto();
   });
 
-  test('should complete full flow', async () => {
+  test("should complete full flow", async () => {
     // Step 1: Generate flashcards
     await generationPage.generateFlashcards("Sample notes...");
-    
+
     // Step 2: Review and save
     await reviewPage.saveFlashcardSet("My Set");
-    
+
     // Step 3: Verify success
     await successPage.waitForSuccess();
     expect(await successPage.isVisible()).toBe(true);
@@ -178,13 +178,11 @@ Szczegółowa dokumentacja klas POM znajduje się w `tests/e2e/pages/README.md`.
 1. Dodaj handlery w `tests/mocks/handlers.ts`:
 
 ```typescript
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from "msw";
 
 export const handlers = [
-  http.get('/api/users', () => {
-    return HttpResponse.json([
-      { id: 1, name: 'John Doe' },
-    ]);
+  http.get("/api/users", () => {
+    return HttpResponse.json([{ id: 1, name: "John Doe" }]);
   }),
 ];
 ```
@@ -256,4 +254,3 @@ Testy są skonfigurowane do uruchamiania w CI/CD pipeline poprzez GitHub Actions
 - [React Testing Library](https://testing-library.com/react)
 - [Playwright Documentation](https://playwright.dev/)
 - [MSW Documentation](https://mswjs.io/)
-

@@ -12,13 +12,13 @@ Konstruktor inicjalizuje usługę, wczytując konfigurację, taką jak klucz API
 
 ```typescript
 // Przykład użycia
-import { OpenRouterService } from './openrouter.service';
+import { OpenRouterService } from "./openrouter.service";
 
 try {
   const openRouterService = new OpenRouterService();
   // ... dalsze użycie
 } catch (error) {
-  console.error('Błąd inicjalizacji usługi:', error);
+  console.error("Błąd inicjalizacji usługi:", error);
 }
 ```
 
@@ -199,7 +199,7 @@ export class OpenRouterService {
     }
 
     const requestBody = this.#buildRequestBody(systemPrompt, userPrompt, schema, modelName, modelParams);
-    
+
     const response = await this.#sendRequest(requestBody);
 
     return this.#parseAndValidateResponse(response, schema);
@@ -232,7 +232,7 @@ export class OpenRouterService {
       ...modelParams,
     };
   }
-  
+
   async #sendRequest(body: OpenRouterRequestBody): Promise<Response> {
     try {
       const response = await fetch(`${this.#baseUrl}/chat/completions`, {
@@ -248,7 +248,7 @@ export class OpenRouterService {
         const errorData = await response.json().catch(() => ({}));
         throw new ApiError(`Błąd API OpenRouter: ${response.statusText}`, response.status, errorData);
       }
-      
+
       return response;
     } catch (error) {
       if (error instanceof ApiError) throw error;
@@ -275,7 +275,7 @@ export class OpenRouterService {
     } catch {
       throw new ValidationError('Zawartość odpowiedzi nie jest prawidłowym obiektem JSON.');
     }
-    
+
     const validationResult = schema.safeParse(parsedContent);
     if (!validationResult.success) {
       throw new ValidationError(`Odpowiedź API nie przeszła walidacji schematu: ${validationResult.error.message}`);
@@ -305,7 +305,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const openRouterService = new OpenRouterService();
-    
+
     const flashcardSet = await openRouterService.generateStructuredResponse({
       systemPrompt: 'Jesteś ekspertem w tworzeniu materiałów do nauki. Twoim zadaniem jest wygenerowanie zestawu fiszek na podany temat. Odpowiedź musi być wyłącznie w formacie JSON zgodnym z dostarczonym schematem.',
       userPrompt: `Wygeneruj dla mnie 5 fiszek na temat: "${topic}".`,

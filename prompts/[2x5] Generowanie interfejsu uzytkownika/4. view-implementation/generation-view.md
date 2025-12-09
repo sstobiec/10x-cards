@@ -3,13 +3,13 @@ Twoim zadaniem jest zaimplementowanie widoku frontendu w oparciu o podany plan i
 Najpierw przejrzyj plan implementacji:
 
 <implementation_plan>
-@generation-view-implementation-plan.md 
+@generation-view-implementation-plan.md
 </implementation_plan>
 
 Teraz przejrzyj zasady implementacji:
 
 <implementation_rules>
-@shared.mdc  @frontend.mdc  @astro.mdc  @react.mdc  @ui-shadcn-helper.mdc 
+@shared.mdc @frontend.mdc @astro.mdc @react.mdc @ui-shadcn-helper.mdc
 </implementation_rules>
 
 Przejrzyj zdefiniowane typy:

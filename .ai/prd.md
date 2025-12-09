@@ -22,6 +22,7 @@ Głównym problemem, który rozwiązuje 10xCards, jest czasochłonność i wysi�
 ## 4. Granice produktu
 
 ### Funkcjonalności objęte MVP:
+
 - Rejestracja i logowanie użytkowników.
 - Generowanie fiszek z tekstu za pomocą AI.
 - Ręczne tworzenie i edycja fiszek.
@@ -30,6 +31,7 @@ Głównym problemem, który rozwiązuje 10xCards, jest czasochłonność i wysi�
 - Podstawowy interfejs do nauki.
 
 ### Funkcjonalności nieobjęte MVP:
+
 - Rozbudowane, autorskie algorytmy powtórek (w stylu SuperMemo/Anki).
 - Import plików w różnych formatach (PDF, DOCX, itp.).
 - Współdzielenie i publiczne udostępnianie zestawów fiszek.

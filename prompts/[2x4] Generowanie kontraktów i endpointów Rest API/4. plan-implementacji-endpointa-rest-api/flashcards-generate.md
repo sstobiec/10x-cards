@@ -3,23 +3,28 @@ Jesteś doświadczonym architektem oprogramowania, którego zadaniem jest stworz
 Zanim zaczniemy, zapoznaj się z poniższymi informacjami:
 
 1. Route API specification:
-<route_api_specification>
+   <route_api_specification>
+
 #### Generate Flashcard Proposals from Text
+
 - **Method:** POST
 - **Path:** `/api/flashcards/generate`
 - **Description:** Generate flashcards from text input using AI (temporary preview, not saved)
 - **Authentication:** Required (JWT)
 - **Request Body:**
+
 ```json
 {
   "text": "String of notes/content to generate flashcards from",
-  "model": "openai/gpt-4o" 
+  "model": "openai/gpt-4o"
 }
 ```
+
 - **Validation:**
   - `text`: required, max 10,000 characters
   - `model`: optional, defaults to configured model
 - **Success Response:** `200 OK`
+
 ```json
 {
   "flashcard_proposals": [
@@ -36,6 +41,7 @@ Zanim zaczniemy, zapoznaj się z poniższymi informacjami:
   "model": "openai/gpt-4o"
 }
 ```
+
 - **Error Responses:**
   - `400 Bad Request` - Text exceeds 10,000 characters or validation failed
   - `401 Unauthorized` - Invalid or missing JWT token
@@ -47,13 +53,16 @@ Zanim zaczniemy, zapoznaj się z poniższymi informacjami:
 </route_api_specification>
 
 2. Related database resources:
-<related_db_resources>
+   <related_db_resources>
+
 ## 1. Tabele
 
 ### 1.1. `auth.users` (Supabase Built-in)
+
 Tabela zarządzana przez Supabase Auth. Przechowuje dane uwierzytelniające użytkowników.
 
 **Kolumny wykorzystywane:**
+
 - `id` (UUID, PRIMARY KEY) - Unikalny identyfikator użytkownika
 - `email` (VARCHAR) - Adres email użytkownika
 - `encrypted_password` (VARCHAR) - Zaszyfrowane hasło
@@ -65,9 +74,11 @@ Tabela zarządzana przez Supabase Auth. Przechowuje dane uwierzytelniające uży
 ---
 
 ### 1.2. `flashcard_sets`
+
 Przechowuje zestawy fiszek należące do użytkowników.
 
 **Kolumny:**
+
 - `id` (UUID, PRIMARY KEY, DEFAULT gen_random_uuid())
 - `user_id` (UUID, NOT NULL, FOREIGN KEY → auth.users.id)
 - `name` (VARCHAR(100), NOT NULL)
@@ -76,17 +87,19 @@ Przechowuje zestawy fiszek należące do użytkowników.
 - `created_at` (TIMESTAMP WITH TIME ZONE, NOT NULL, DEFAULT NOW())
 - `updated_at` (TIMESTAMP WITH TIME ZONE, NOT NULL, DEFAULT NOW())
 
-
 **Ograniczenia:**
+
 - `UNIQUE(user_id, name)` - Zapewnia unikalność nazwy zestawu dla każdego użytkownika
 - `FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE` - Kaskadowe usuwanie zestawów przy usunięciu użytkownika
 
 ---
 
 ### 1.3. `flashcards`
+
 Przechowuje pojedyncze fiszki w ramach zestawów.
 
 **Kolumny:**
+
 - `id` (UUID, PRIMARY KEY, DEFAULT gen_random_uuid())
 - `set_id` (UUID, NOT NULL, FOREIGN KEY → flashcard_sets.id)
 - `avers` (VARCHAR(200), NOT NULL)
@@ -97,6 +110,7 @@ Przechowuje pojedyncze fiszki w ramach zestawów.
 - `updated_at` (TIMESTAMP WITH TIME ZONE, NOT NULL, DEFAULT NOW())
 
 **Ograniczenia:**
+
 - `FOREIGN KEY (set_id) REFERENCES flashcard_sets(id) ON DELETE CASCADE` - Kaskadowe usuwanie fiszek przy usunięciu zestawu
 - `CHECK (LENGTH(TRIM(avers)) > 0)` - Awers nie może być pusty
 - `CHECK (LENGTH(TRIM(rewers)) > 0)` - Rewers nie może być pusty
@@ -104,9 +118,11 @@ Przechowuje pojedyncze fiszki w ramach zestawów.
 ---
 
 ### 1.4. `error_logs`
+
 Rejestruje błędy występujące podczas operacji na zestawach fiszek (głównie podczas generowania przez AI).
 
 **Kolumny:**
+
 - `id` (UUID, PRIMARY KEY, DEFAULT gen_random_uuid())
 - `user_id` (UUID, NOT NULL, FOREIGN KEY → auth.users.id)
 - `model` (VARCHAR(100), NOT NULL)
@@ -116,6 +132,7 @@ Rejestruje błędy występujące podczas operacji na zestawach fiszek (głównie
 - `created_at` (TIMESTAMP WITH TIME ZONE, NOT NULL, DEFAULT NOW())
 
 **Ograniczenia:**
+
 - `FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE`
 
 ---
@@ -123,14 +140,17 @@ Rejestruje błędy występujące podczas operacji na zestawach fiszek (głównie
 ## 2. Typy Wyliczeniowe (ENUMs)
 
 ### 2.1. `flashcard_source`
+
 Określa pochodzenie fiszki.
 
 **Wartości:**
+
 - `'manual'` - Fiszka utworzona ręcznie przez użytkownika
 - `'ai-full'` - Fiszka wygenerowana przez AI i niemodyfikowana
 - `'ai-edited'` - Fiszka wygenerowana przez AI i następnie edytowana przez użytkownika
 
 **Definicja SQL:**
+
 ```sql
 CREATE TYPE flashcard_source AS ENUM ('manual', 'ai-full', 'ai-edited');
 ```
@@ -140,18 +160,21 @@ CREATE TYPE flashcard_source AS ENUM ('manual', 'ai-full', 'ai-edited');
 ## 3. Relacje między Tabelami
 
 ### 3.1. `auth.users` → `flashcard_sets`
+
 - **Typ relacji:** Jeden-do-wielu (1:N)
 - **Opis:** Jeden użytkownik może mieć wiele zestawów fiszek
 - **Klucz obcy:** `flashcard_sets.user_id` → `auth.users.id`
 - **Kaskada:** `ON DELETE CASCADE` - Usunięcie użytkownika usuwa wszystkie jego zestawy
 
 ### 3.2. `flashcard_sets` → `flashcards`
+
 - **Typ relacji:** Jeden-do-wielu (1:N)
 - **Opis:** Jeden zestaw może zawierać wiele fiszek
 - **Klucz obcy:** `flashcards.set_id` → `flashcard_sets.id`
 - **Kaskada:** `ON DELETE CASCADE` - Usunięcie zestawu usuwa wszystkie zawarte w nim fiszki
 
 ### 3.3. `auth.users` → `error_logs`
+
 - **Typ relacji:** Jeden-do-wielu (1:N)
 - **Opis:** Jeden użytkownik może mieć wiele logów błędów
 - **Klucz obcy:** `error_logs.user_id` → `auth.users.id`
@@ -162,19 +185,19 @@ CREATE TYPE flashcard_source AS ENUM ('manual', 'ai-full', 'ai-edited');
 </related_db_resources>
 
 3. Definicje typów:
-<type_definitions>
-@types.ts 
-</type_definitions>
+   <type_definitions>
+   @types.ts
+   </type_definitions>
 
-3. Tech stack:
-<tech_stack>
-@tech-stack.md 
-</tech_stack>
+4. Tech stack:
+   <tech_stack>
+   @tech-stack.md
+   </tech_stack>
 
-4. Implementation rules:
-<implementation_rules>
-@shared.mdc @backend.mdc @astro.mdc 
-</implementation_rules>
+5. Implementation rules:
+   <implementation_rules>
+   @shared.mdc @backend.mdc @astro.mdc
+   </implementation_rules>
 
 Twoim zadaniem jest stworzenie kompleksowego planu wdrożenia endpointu interfejsu API REST. Przed dostarczeniem ostatecznego planu użyj znaczników <analysis>, aby przeanalizować informacje i nakreślić swoje podejście. W tej analizie upewnij się, że:
 
@@ -199,6 +222,7 @@ Po przeprowadzeniu analizy utwórz szczegółowy plan wdrożenia w formacie mark
 8. Kroki implementacji
 
 W całym planie upewnij się, że
+
 - Używać prawidłowych kodów stanu API:
   - 200 dla pomyślnego odczytu
   - 201 dla pomyślnego utworzenia
@@ -212,12 +236,15 @@ W całym planie upewnij się, że
 Końcowym wynikiem powinien być dobrze zorganizowany plan wdrożenia w formacie markdown. Oto przykład tego, jak powinny wyglądać dane wyjściowe:
 
 ``markdown
+
 # API Endpoint Implementation Plan: [Nazwa punktu końcowego]
 
 ## 1. Przegląd punktu końcowego
+
 [Krótki opis celu i funkcjonalności punktu końcowego]
 
 ## 2. Szczegóły żądania
+
 - Metoda HTTP: [GET/POST/PUT/DELETE]
 - Struktura URL: [wzorzec URL]
 - Parametry:
@@ -226,30 +253,39 @@ Końcowym wynikiem powinien być dobrze zorganizowany plan wdrożenia w formacie
 - Request Body: [Struktura treści żądania, jeśli dotyczy]
 
 ## 3. Wykorzystywane typy
+
 [DTOs i Command Modele niezbędne do implementacji]
 
 ## 3. Szczegóły odpowiedzi
+
 [Oczekiwana struktura odpowiedzi i kody statusu]
 
 ## 4. Przepływ danych
+
 [Opis przepływu danych, w tym interakcji z zewnętrznymi usługami lub bazami danych]
 
 ## 5. Względy bezpieczeństwa
+
 [Szczegóły uwierzytelniania, autoryzacji i walidacji danych]
 
 ## 6. Obsługa błędów
+
 [Lista potencjalnych błędów i sposób ich obsługi]
 
 ## 7. Rozważania dotyczące wydajności
+
 [Potencjalne wąskie gardła i strategie optymalizacji]
 
 ## 8. Etapy wdrożenia
+
 1. [Krok 1]
 2. [Krok 2]
 3. [Krok 3]
-...
+   ...
+
 ```
 
 Końcowe wyniki powinny składać się wyłącznie z planu wdrożenia w formacie markdown i nie powinny powielać ani powtarzać żadnej pracy wykonanej w sekcji analizy.
 
 Pamiętaj, aby zapisać swój plan wdrożenia jako .ai/view-implementation-plan.md. Upewnij się, że plan jest szczegółowy, przejrzysty i zapewnia kompleksowe wskazówki dla zespołu programistów.
+```

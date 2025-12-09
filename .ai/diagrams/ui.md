@@ -1,12 +1,15 @@
 <architecture_analysis>
+
 ### 1. Lista Komponentów i Stron
 
 Na podstawie analizy dokumentacji, zidentyfikowano następujące elementy biorące udział w procesie autentykacji:
 
 **Layouty (Astro):**
+
 - `src/layouts/Layout.astro`: Główny layout aplikacji, który zostanie zaktualizowany, aby dynamicznie renderować interfejs w zależności od statusu zalogowania użytkownika.
 
 **Strony (Astro):**
+
 - `src/pages/login.astro`: Strona logowania.
 - `src/pages/register.astro`: Strona rejestracji.
 - `src/pages/reset-password.astro`: Strona do resetowania hasła.
@@ -14,6 +17,7 @@ Na podstawie analizy dokumentacji, zidentyfikowano następujące elementy biorą
 - Chronione strony (np. `src/pages/generate.astro`): Strony dostępne tylko dla zalogowanych użytkowników.
 
 **Nowe Komponenty (React):**
+
 - `src/components/auth/AuthForm.tsx`: Generyczny wrapper dla formularzy autentykacji.
 - `src/components/auth/LoginForm.tsx`: Formularz logowania.
 - `src/components/auth/RegisterForm.tsx`: Formularz rejestracji.
@@ -22,10 +26,12 @@ Na podstawie analizy dokumentacji, zidentyfikowano następujące elementy biorą
 - `src/components/auth/UserDropdown.tsx`: Rozwijane menu dla zalogowanego użytkownika.
 
 **Komponenty UI (shadcn/ui):**
+
 - `Input`: Pole do wprowadzania danych.
 - `Button`: Przycisk akcji.
 
 **Logika Backendowa:**
+
 - `src/middleware/index.ts`: Middleware do ochrony stron.
 - `src/pages/api/auth/login.ts`: API endpoint do logowania.
 - `src/pages/api/auth/register.ts`: API endpoint do rejestracji.
@@ -61,9 +67,10 @@ Na podstawie analizy dokumentacji, zidentyfikowano następujące elementy biorą
 - **`LoginForm.tsx`**: Komponent kliencki z polami na email i hasło. Odpowiada za walidację po stronie klienta i komunikację z API logowania.
 - **`RegisterForm.tsx`**: Komponent kliencki z polami na nazwę użytkownika, email i hasła. Odpowiada za walidację i komunikację z API rejestracji. Po sukcesie wyświetla informację o konieczności potwierdzenia emaila.
 - **`UserDropdown.tsx`**: Komponent wyświetlający menu dla zalogowanego użytkownika, zawierający opcję wylogowania, która komunikuje się z API wylogowywania.
-</architecture_analysis>
+  </architecture_analysis>
 
 <mermaid_diagram>
+
 ```mermaid
 flowchart TD
     classDef newComponent fill:#cce5ff,stroke:#004085,stroke-width:2px;
@@ -77,7 +84,7 @@ flowchart TD
         subgraph "Layout (Astro)"
             Layout["src/layouts/Layout.astro"]:::updatedComponent
         end
-        
+
         subgraph "Strony Publiczne (Astro)"
             LoginPage["src/pages/login.astro"]:::astroPage
             RegisterPage["src/pages/register.astro"]:::astroPage
@@ -86,14 +93,14 @@ flowchart TD
         subgraph "Strony Chronione (Astro)"
             ProtectedPage["np. /generate"]:::astroPage
         end
-        
+
         subgraph "Komponenty (React)"
             direction LR
             subgraph "Współdzielone"
                 AuthForm["AuthForm.tsx"]:::newComponent
                 UserDropdown["UserDropdown.tsx"]:::newComponent
             end
-            
+
             subgraph "Specyficzne dla stron"
                  LoginForm["LoginForm.tsx"]:::reactComponent
                  RegisterForm["RegisterForm.tsx"]:::reactComponent
@@ -112,7 +119,7 @@ flowchart TD
             MW["src/middleware/index.ts"]:::middleware
         end
     end
-    
+
     subgraph "Usługi Zewnętrzne"
         Supabase["Supabase Auth"]
     end
@@ -123,28 +130,29 @@ flowchart TD
 
     LoginPage -- "Renderuje" --> LoginForm
     RegisterPage -- "Renderuje" --> RegisterForm
-    
+
     LoginForm -- "Używa" --> AuthForm
     RegisterForm -- "Używa" --> AuthForm
-    
+
     Layout -- "Opakowuje wszystkie strony" --> LoginPage
     Layout -- "Opakowuje wszystkie strony" --> RegisterPage
     Layout -- "Opakowuje wszystkie strony" --> ProtectedPage
-    
+
     LoginForm -- "POST /api/auth/login" --> LoginAPI
     RegisterForm -- "POST /api/auth/register" --> RegisterAPI
-    
+
     LoginAPI -- "Wywołuje" --> Supabase
     RegisterAPI -- "Wywołuje" --> Supabase
-    
+
     User -- "Próba dostępu" --> ProtectedPage
     ProtectedPage -- "Jest chroniona przez" --> MW
     MW -- "Weryfikuje sesję z" --> Supabase
     MW -- "Przekierowuje na" --> LoginPage
     MW -- "Ustawia Astro.locals.user" --> Layout
-    
+
     Layout -- "Renderuje warunkowo" --> UserDropdown
     UserDropdown -- "POST /api/auth/logout" --> LogoutAPI
     LogoutAPI -- "Wywołuje" --> Supabase
 ```
+
 </mermaid_diagram>

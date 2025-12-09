@@ -7,6 +7,7 @@ Punkt końcowy `/api/flashcard-sets` umożliwia zarządzanie zestawami fiszek. P
 ## 2. Szczegóły żądania
 
 ### 2.1. List All Flashcard Sets
+
 - **Metoda HTTP:** `GET`
 - **URL:** `/api/flashcard-sets`
 - **Parametry Query:**
@@ -15,12 +16,14 @@ Punkt końcowy `/api/flashcard-sets` umożliwia zarządzanie zestawami fiszek. P
   - `sort` (opcjonalny): `created_at_desc` (default) lub `created_at_asc`
 
 ### 2.2. Get Single Flashcard Set
+
 - **Metoda HTTP:** `GET`
 - **URL:** `/api/flashcard-sets/[id]`
 - **Parametry URL:**
   - `id`: UUID zestawu (wymagany)
 
 ### 2.3. Create Flashcard Set
+
 - **Metoda HTTP:** `POST`
 - **URL:** `/api/flashcard-sets`
 - **Body (JSON):**
@@ -30,6 +33,7 @@ Punkt końcowy `/api/flashcard-sets` umożliwia zarządzanie zestawami fiszek. P
   - `flashcards` (opcjonalne): Tablica obiektów `FlashcardCreateCommand`
 
 ### 2.4. Update Flashcard Set
+
 - **Metoda HTTP:** `PATCH`
 - **URL:** `/api/flashcard-sets/[id]`
 - **Parametry URL:**
@@ -38,6 +42,7 @@ Punkt końcowy `/api/flashcard-sets` umożliwia zarządzanie zestawami fiszek. P
   - `name` (wymagane): string
 
 ### 2.5. Delete Flashcard Set
+
 - **Metoda HTTP:** `DELETE`
 - **URL:** `/api/flashcard-sets/[id]`
 - **Parametry URL:**
@@ -85,8 +90,8 @@ Należy wykorzystać definicje z `src/types.ts`:
 4.  **Service Layer:** Wywołanie metod z serwisu `FlashcardSetService`.
 5.  **Database Interaction:** Serwis komunikuje się z Supabase.
     - W przypadku `POST` (Create):
-        1. Insert do `flashcard_sets`.
-        2. (Opcjonalnie) Insert do `flashcards` z użyciem ID nowego zestawu.
+      1. Insert do `flashcard_sets`.
+      2. (Opcjonalnie) Insert do `flashcards` z użyciem ID nowego zestawu.
     - W przypadku `GET` (List): Pobranie zestawów z licznikiem relacji (`count`).
 6.  **DTO Mapping:** Transformacja wyników z bazy na odpowiednie DTO (np. obliczenie `flashcard_count` jeśli baza zwraca inną strukturę).
 7.  **Response:** Zwrócenie odpowiedzi JSON z odpowiednim kodem HTTP.
@@ -109,20 +114,24 @@ Należy wykorzystać definicje z `src/types.ts`:
 
 - **Paginacja:** Wymuszona paginacja dla listy zestawów (domyślny limit 50).
 - **Relacje:**
-    - Dla listy zestawów: Nie pobieramy pełnych danych fiszek, tylko ich liczbę (`count`).
-    - Dla szczegółów: Pobieramy fiszki jednym zapytaniem (eager loading).
+  - Dla listy zestawów: Nie pobieramy pełnych danych fiszek, tylko ich liczbę (`count`).
+  - Dla szczegółów: Pobieramy fiszki jednym zapytaniem (eager loading).
 - **Indeksy:** Upewnić się, że `user_id` i `set_id` są indeksowane (Supabase tworzy indeksy na kluczach obcych domyślnie, ale warto zweryfikować).
 
 ## 9. Etapy wdrożenia
 
 ### Krok 1: Utworzenie schematów walidacji Zod
+
 Utwórz plik `src/lib/validation/flashcard-sets.ts` (lub podobny) zawierający schematy Zod odpowiadające DTO:
+
 - `createFlashcardSetSchema`
 - `updateFlashcardSetSchema`
 - `flashcardSetQuerySchema` (limit, offset, sort)
 
 ### Krok 2: Implementacja serwisu `FlashcardSetService`
+
 Utwórz plik `src/lib/services/flashcard-set.service.ts`:
+
 - Klasa `FlashcardSetService` lub zestaw funkcji eksportowanych.
 - Metody: `list`, `getById`, `create`, `update`, `delete`.
 - Wstrzykiwanie klienta Supabase (przekazywanie jako argument).
@@ -130,13 +139,17 @@ Utwórz plik `src/lib/services/flashcard-set.service.ts`:
 - Mapowanie wyników DB na DTO.
 
 ### Krok 3: Implementacja endpointu List & Create (`index.ts`)
+
 Utwórz plik `src/pages/api/flashcard-sets/index.ts`:
+
 - Obsługa metody `GET`: Walidacja query params -> Service.list -> Response.
 - Obsługa metody `POST`: Walidacja body -> Service.create -> Response.
 - Obsługa błędów (try-catch, mapowanie błędów).
 
 ### Krok 4: Implementacja endpointu Detail, Update, Delete (`[id].ts`)
+
 Utwórz plik `src/pages/api/flashcard-sets/[id].ts`:
+
 - Obsługa `GET`: Walidacja ID -> Service.getById -> Response.
 - Obsługa `PATCH`: Walidacja ID i body -> Service.update -> Response.
 - Obsługa `DELETE`: Walidacja ID -> Service.delete -> Response.

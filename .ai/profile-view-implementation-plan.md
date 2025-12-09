@@ -84,10 +84,11 @@ Nie jest wymagany żaden globalny store ani skomplikowane reducery, ponieważ je
 Proces wylogowania wymaga interakcji z Supabase Auth. Ze względu na architekturę SSR i ciasteczka `httpOnly`, najbezpieczniejszą metodą jest wywołanie endpointu API lub użycie klienta Supabase w przeglądarce, który obsłuży sesję.
 
 **Żądanie (Logout):**
+
 - **Metoda:** Wywołanie funkcji klienta Supabase `supabase.auth.signOut()`.
 - **Backend:** Supabase Auth automatycznie czyści sesję.
 - **API Endpoint (Opcjonalnie):** Jeśli aplikacja używa endpointu do czyszczenia ciasteczek po stronie serwera (np. `/api/auth/signout`), należy wykonać request `POST` lub `GET` na ten endpoint.
-  *Zakładając standardową implementację w tym projekcie:* Użyjemy `createBrowserClient` (jeśli dostępny w `src/lib/supabase-client.ts` lub podobnym) lub metody `POST` do endpointu `/api/auth/signout`.
+  _Zakładając standardową implementację w tym projekcie:_ Użyjemy `createBrowserClient` (jeśli dostępny w `src/lib/supabase-client.ts` lub podobnym) lub metody `POST` do endpointu `/api/auth/signout`.
 
 ## 8. Interakcje użytkownika
 
@@ -126,4 +127,3 @@ Proces wylogowania wymaga interakcji z Supabase Auth. Ze względu na architektur
 
 4. **Dodanie linku do nawigacji (Opcjonalnie):**
    - Jeśli istnieje główny navbar (`Layout.astro` lub komponent `Navigation`), dodanie linku do `/profile` lub obsługa dropdownu użytkownika.
-

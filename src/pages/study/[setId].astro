@@ -1,0 +1,88 @@
+---
+/**
+ * Study Page
+ *
+ * Displays a learning session for a specific flashcard set.
+ * Uses the LearningSession component to handle spaced repetition.
+ */
+import Layout from "@/layouts/Layout.astro";
+import { LearningSession } from "@/components/learning";
+import {
+  getFlashcardSetById,
+  FlashcardSetNotFoundError,
+  FlashcardSetAccessDeniedError,
+} from "@/lib/flashcard-set.service";
+
+// Disable prerendering for this page (dynamic content)
+export const prerender = false;
+
+// Protect this route - only authenticated users can access
+const { user, supabase } = Astro.locals;
+
+if (!user) {
+  return Astro.redirect("/login");
+}
+
+// Get set ID from URL params
+const { setId } = Astro.params;
+
+if (!setId) {
+  return Astro.redirect("/dashboard");
+}
+
+// Verify the flashcard set exists and user has access
+let flashcardSet;
+try {
+  flashcardSet = await getFlashcardSetById(setId, user.id, supabase);
+} catch (error) {
+  if (error instanceof FlashcardSetNotFoundError) {
+    return Astro.redirect("/dashboard?error=not_found");
+  }
+  if (error instanceof FlashcardSetAccessDeniedError) {
+    return Astro.redirect("/dashboard?error=access_denied");
+  }
+  // For other errors, redirect to dashboard with generic error
+  return Astro.redirect("/dashboard?error=unknown");
+}
+
+// Check if there are any flashcards to study
+const hasFlashcards = flashcardSet.flashcards.length > 0;
+---
+
+<Layout title={`Nauka: ${flashcardSet.name} - 10x Cards`}>
+  <main class="min-h-screen bg-background">
+    <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* Page Header */}
+      <header class="mb-8 text-center">
+        <h1 class="text-2xl font-bold text-foreground md:text-3xl">
+          {flashcardSet.name}
+        </h1>
+        <p class="mt-2 text-muted-foreground">
+          {flashcardSet.flashcards.length}
+          {flashcardSet.flashcards.length === 1 ? "fiszka" : flashcardSet.flashcards.length < 5 ? "fiszki" : "fiszek"}
+        </p>
+      </header>
+
+      {/* Learning Session or Empty State */}
+      {
+        hasFlashcards ? (
+          <LearningSession client:load setId={setId} limit={20} backUrl={`/sets/${setId}`} />
+        ) : (
+          <div class="flex min-h-[400px] flex-col items-center justify-center text-center">
+            <div class="mb-4 text-5xl">📚</div>
+            <h2 class="mb-2 text-lg font-semibold">Brak fiszek do nauki</h2>
+            <p class="mb-6 text-muted-foreground">
+              Ten zestaw nie zawiera jeszcze żadnych fiszek. Dodaj fiszki, aby rozpocząć naukę.
+            </p>
+            <a
+              href={`/sets/${setId}`}
+              class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              Dodaj fiszki
+            </a>
+          </div>
+        )
+      }
+    </div>
+  </main>
+</Layout>

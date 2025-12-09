@@ -19,6 +19,50 @@ export type ErrorLogEntity = Tables<"error_logs">;
 export type FlashcardSource = Enums<"flashcard_source">;
 
 // ============================================================================
+// Learning Session / Spaced Repetition Types
+// ============================================================================
+
+/**
+ * FSRS card state enum values
+ * - new: Card has never been reviewed
+ * - learning: Card is in initial learning phase
+ * - review: Card has graduated and is in review phase
+ * - relearning: Card was forgotten and is being relearned
+ */
+export type FSRSCardState = "new" | "learning" | "review" | "relearning";
+
+/**
+ * FSRS Rating enum values (matches ts-fsrs Rating)
+ * - 1: Again - Complete failure to recall
+ * - 2: Hard - Recalled with significant difficulty
+ * - 3: Good - Recalled with some effort
+ * - 4: Easy - Recalled effortlessly
+ */
+export type FSRSRating = 1 | 2 | 3 | 4;
+
+/**
+ * User's learning progress for a single flashcard
+ * Stores FSRS algorithm state for spaced repetition scheduling
+ */
+export interface UserFlashcardProgressEntity {
+  id: string;
+  user_id: string;
+  flashcard_id: string;
+  state: FSRSCardState;
+  stability: number;
+  difficulty: number;
+  elapsed_days: number;
+  scheduled_days: number;
+  reps: number;
+  lapses: number;
+  learning_steps: number;
+  last_review: string | null;
+  next_review: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// ============================================================================
 // Common/Utility DTOs
 // ============================================================================
 
@@ -350,3 +394,82 @@ export const FlashcardGenerationSchema = z.object({
  * Type inferred from FlashcardGenerationSchema
  */
 export type FlashcardGeneration = z.infer<typeof FlashcardGenerationSchema>;
+
+// ============================================================================
+// Learning Session DTOs
+// ============================================================================
+
+/**
+ * Flashcard combined with user's learning progress
+ * Used in learning session queue
+ */
+export interface FlashcardWithProgressDTO {
+  /** Flashcard data */
+  flashcard: FlashcardDTO;
+  /** User's progress on this flashcard (null if never reviewed) */
+  progress: UserFlashcardProgressDTO | null;
+}
+
+/**
+ * User flashcard progress DTO (excludes user_id for responses)
+ */
+export interface UserFlashcardProgressDTO {
+  id: string;
+  flashcard_id: string;
+  state: FSRSCardState;
+  stability: number;
+  difficulty: number;
+  elapsed_days: number;
+  scheduled_days: number;
+  reps: number;
+  lapses: number;
+  learning_steps: number;
+  last_review: string | null;
+  next_review: string;
+}
+
+/**
+ * Request to get learning queue
+ * GET /api/learning/queue
+ */
+export interface GetLearningQueueRequestDTO {
+  /** ID of the flashcard set to study */
+  setId: string;
+  /** Maximum number of cards to return (default: 20) */
+  limit?: number;
+}
+
+/**
+ * Response containing learning queue
+ * GET /api/learning/queue
+ */
+export interface GetLearningQueueResponseDTO {
+  /** Flashcards due for review with their progress data */
+  queue: FlashcardWithProgressDTO[];
+  /** Total number of cards due for review */
+  totalDue: number;
+  /** Total number of new cards (never reviewed) */
+  totalNew: number;
+}
+
+/**
+ * Request to submit a review
+ * POST /api/learning/review
+ */
+export interface SubmitReviewRequestDTO {
+  /** ID of the flashcard being reviewed */
+  flashcardId: string;
+  /** User's rating (1=Again, 2=Hard, 3=Good, 4=Easy) */
+  rating: FSRSRating;
+}
+
+/**
+ * Response after submitting a review
+ * POST /api/learning/review
+ */
+export interface SubmitReviewResponseDTO {
+  /** Updated progress data */
+  progress: UserFlashcardProgressDTO;
+  /** Next review date in ISO format */
+  nextReview: string;
+}

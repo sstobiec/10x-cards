@@ -3,7 +3,9 @@
 ## ✅ Zrealizowane zadania
 
 ### 1. Instalacja pakietów
+
 Zainstalowano wszystkie niezbędne pakiety testowe:
+
 - ✅ `vitest` - Framework testowy
 - ✅ `@vitest/ui` - Interfejs UI dla Vitest
 - ✅ `@vitest/coverage-v8` - Narzędzie do pokrycia kodu
@@ -15,13 +17,13 @@ Zainstalowano wszystkie niezbędne pakiety testowe:
 - ✅ `msw` - Mock Service Worker
 
 ### 2. Pliki konfiguracyjne
+
 - ✅ `vitest.config.ts` - Konfiguracja Vitest z:
   - Środowiskiem jsdom
   - Setup files
   - Pokryciem kodu (thresholds: 70%)
   - Aliasami dla importów
   - Wykluczeniem testów E2E
-  
 - ✅ `playwright.config.ts` - Konfiguracja Playwright z:
   - Tylko przeglądarką Chromium (zgodnie z wytycznymi)
   - Automatycznym uruchomieniem dev servera
@@ -29,6 +31,7 @@ Zainstalowano wszystkie niezbędne pakiety testowe:
   - HTML reporterem
 
 ### 3. Struktura katalogów
+
 ```
 tests/
 ├── setup/              # Pliki konfiguracyjne
@@ -48,9 +51,11 @@ tests/
 ```
 
 ### 4. Skrypty npm
+
 Dodano następujące skrypty do `package.json`:
 
 **Testy jednostkowe i integracyjne:**
+
 - `npm run test` - Tryb watch
 - `npm run test:run` - Uruchomienie pojedyncze
 - `npm run test:ui` - Interfejs UI
@@ -58,12 +63,14 @@ Dodano następujące skrypty do `package.json`:
 - `npm run test:watch` - Tryb watch (alias)
 
 **Testy E2E:**
+
 - `npm run test:e2e` - Uruchomienie testów E2E
 - `npm run test:e2e:ui` - UI mode
 - `npm run test:e2e:debug` - Tryb debugowania
 - `npm run test:e2e:report` - Wyświetlenie raportu
 
 ### 5. Pliki pomocnicze
+
 - ✅ `tests/setup/test-setup.ts` - Globalna konfiguracja testów z:
   - Importem @testing-library/jest-dom
   - Cleanup po każdym teście
@@ -72,6 +79,7 @@ Dodano następujące skrypty do `package.json`:
 - ✅ `tests/mocks/` - Struktura MSW z przykładowymi handlerami
 
 ### 6. GitHub Actions
+
 - ✅ `.github/workflows/test.yml` - CI/CD pipeline z:
   - Job dla testów jednostkowych i integracyjnych
   - Job dla testów E2E
@@ -79,7 +87,9 @@ Dodano następujące skrypty do `package.json`:
   - Upload raportów Playwright
 
 ### 7. Gitignore
+
 Zaktualizowano `.gitignore` o:
+
 - `coverage/` - Raporty pokrycia kodu
 - `.vitest/` - Cache Vitest
 - `tests/playwright-report/` - Raporty Playwright
@@ -87,6 +97,7 @@ Zaktualizowano `.gitignore` o:
 - `*.lcov` - Pliki pokrycia
 
 ### 8. Dokumentacja
+
 - ✅ `tests/README.md` - Kompletny przewodnik po testach zawierający:
   - Strukturę katalogów
   - Instrukcje uruchamiania testów
@@ -103,18 +114,18 @@ Zaktualizowano `.gitignore` o:
 2. Napisz test zgodnie z wzorcem:
 
 ```typescript
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 
-describe('Nazwa funkcjonalności', () => {
-  it('powinien robić coś konkretnego', () => {
+describe("Nazwa funkcjonalności", () => {
+  it("powinien robić coś konkretnego", () => {
     // Arrange - przygotowanie danych
-    const input = 'test';
-    
+    const input = "test";
+
     // Act - wykonanie akcji
     const result = someFunction(input);
-    
+
     // Assert - sprawdzenie wyniku
-    expect(result).toBe('oczekiwany wynik');
+    expect(result).toBe("oczekiwany wynik");
   });
 });
 ```
@@ -141,11 +152,11 @@ describe('NazwaKomponentu', () => {
 2. Napisz test:
 
 ```typescript
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('powinien wykonać user flow', async ({ page }) => {
-  await page.goto('/');
-  await page.click('button');
+test("powinien wykonać user flow", async ({ page }) => {
+  await page.goto("/");
+  await page.click("button");
   await expect(page).toHaveURL(/\/success/);
 });
 ```
@@ -189,4 +200,3 @@ test('powinien wykonać user flow', async ({ page }) => {
 
 **Data konfiguracji:** 2025-11-22
 **Status:** ✅ Gotowe do użycia
-
