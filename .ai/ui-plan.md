@@ -96,14 +96,17 @@ Zarządzanie stanem globalnym (sesja użytkownika) będzie realizowane przy pomo
 Opisuje dwa kluczowe przepływy pracy w aplikacji:
 
 **A. Generowanie zestawu fiszek za pomocą AI:**
-1.  **`/auth` -> `/dashboard`**: Użytkownik loguje się i trafia na pulpit.
+1.  **`/login` -> `/dashboard`**: Użytkownik loguje się (oddzielna strona logowania) i przechodzi do pulpitu.
 2.  **`/dashboard`**: Klika przycisk "Generuj z tekstu".
 3.  **`-> /generate`**: Zostaje przekierowany do widoku generatora. Wkleja tekst, klika "Generuj fiszki" i czeka na zakończenie operacji (widzi wskaźnik ładowania).
 4.  **`/generate` (stan po generacji)**: Widok dynamicznie się zmienia, wyświetlając listę propozycji. Użytkownik przegląda, edytuje lub usuwa fiszki, nadaje zestawowi nazwę i klika "Zapisz zestaw".
-5.  **`-> /dashboard`**: Po pomyślnym zapisie zostaje przekierowany z powrotem na pulpit, gdzie nowy zestaw jest widoczny na liście.
+5.  **`/generate` (stan sukcesu)**: Po pomyślnym zapisie widok pokazuje ekran sukcesu z trzema opcjami:
+    - "Rozpocznij naukę" → przekierowanie do `/sets/[id]` (edytor zestawu)
+    - "Generuj kolejny zestaw" → reset do stanu początkowego generatora
+    - "Zobacz wszystkie zestawy" → przekierowanie do `/dashboard`
 
 **B. Ręczne tworzenie i edycja zestawu:**
-1.  **`/auth` -> `/dashboard`**: Użytkownik loguje się i trafia na pulpit.
+1.  **`/login` -> `/dashboard`**: Użytkownik loguje się (oddzielna strona logowania) i przechodzi do pulpitu.
 2.  **`/dashboard`**: Klika przycisk "Stwórz ręcznie". Pojawia się modal z prośbą o podanie nazwy nowego zestawu.
 3.  **`-> /sets/[id]`**: Po podaniu nazwy i zatwierdzeniu, zostaje przekierowany do widoku edytora dla nowo utworzonego, pustego zestawu.
 4.  **`/sets/[id]`**: Używa formularza, aby dodawać fiszki jedna po drugiej. Może również edytować lub usuwać już dodane fiszki. Wszystkie zmiany są zapisywane na bieżąco.

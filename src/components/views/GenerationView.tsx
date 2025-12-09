@@ -33,6 +33,8 @@ function GenerationViewContent() {
     setText,
     setName,
     setSetName,
+    selectedModel,
+    setSelectedModel,
     proposals,
     error,
     savedSetInfo,
@@ -75,7 +77,14 @@ function GenerationViewContent() {
           </p>
         </div>
 
-        <GenerationForm text={text} onTextChange={setText} onGenerate={generateProposals} isLoading={false} />
+        <GenerationForm
+          text={text}
+          onTextChange={setText}
+          selectedModel={selectedModel}
+          onModelChange={setSelectedModel}
+          onGenerate={generateProposals}
+          isLoading={false}
+        />
       </div>
     );
   }

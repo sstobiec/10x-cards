@@ -23,7 +23,7 @@ export function DashboardContainer() {
     async (name: string) => {
       const createdSet = await createSet(name);
       // Redirect to edit page after successful creation
-      window.location.href = `/sets/${createdSet.id}/edit`;
+      window.location.href = `/sets/${createdSet.id}`;
     },
     [createSet]
   );

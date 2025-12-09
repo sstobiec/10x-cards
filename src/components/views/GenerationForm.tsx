@@ -2,10 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { TEXT_MAX_LENGTH, isTextOverLimit, isTextValidForGeneration } from "@/lib/validation/generation.validation";
+import { ModelSelector } from "./ModelSelector";
 
 interface GenerationFormProps {
   text: string;
   onTextChange: (text: string) => void;
+  selectedModel: string;
+  onModelChange: (modelId: string) => void;
   onGenerate: () => void;
   isLoading: boolean;
 }
@@ -18,7 +21,14 @@ interface GenerationFormProps {
  * - Validation (empty text, max length)
  * - Loading state handling
  */
-export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: GenerationFormProps) {
+export function GenerationForm({
+  text,
+  onTextChange,
+  selectedModel,
+  onModelChange,
+  onGenerate,
+  isLoading,
+}: GenerationFormProps) {
   const characterCount = text.length;
   const isOverLimit = isTextOverLimit(text);
   const isValid = isTextValidForGeneration(text);
@@ -32,6 +42,9 @@ export function GenerationForm({ text, onTextChange, onGenerate, isLoading }: Ge
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto space-y-4 lg:space-y-6">
+      {/* Model selector */}
+      <ModelSelector selectedModel={selectedModel} onModelChange={onModelChange} disabled={isLoading} />
+
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <label htmlFor="input-text" className="text-sm font-medium text-foreground">

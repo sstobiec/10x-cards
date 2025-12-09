@@ -46,8 +46,8 @@ export default function LoginForm() {
         return;
       }
 
-      // Success - redirect to home page
-      window.location.href = "/";
+      // Success - redirect to dashboard
+      window.location.href = "/dashboard";
     } catch {
       setError("Wystąpił błąd podczas logowania. Spróbuj ponownie.");
       setIsLoading(false);

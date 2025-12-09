@@ -25,6 +25,7 @@ import {
   FlashcardGenerationApiError,
 } from "@/lib/api/flashcard-generation.api";
 import { validateGenerationText, validateSetName } from "@/lib/validation/generation.validation";
+import { DEFAULT_MODEL_ID } from "@/lib/llm-models.config";
 
 // ============================================================================
 // Types
@@ -67,6 +68,7 @@ export function useGeneration() {
   const [state, setState] = useState<GenerationViewState>("idle");
   const [text, setText] = useState("");
   const [setName, setSetName] = useState("");
+  const [selectedModel, setSelectedModel] = useState(DEFAULT_MODEL_ID);
   const [error, setError] = useState<ApiError | null>(null);
   const [savedSetInfo, setSavedSetInfo] = useState<CreateFlashcardSetResponseDTO | null>(null);
   const [generationMetadata, setGenerationMetadata] = useState<GenerationMetadata | null>(null);
@@ -101,8 +103,8 @@ export function useGeneration() {
       setState("generating");
       setError(null);
 
-      // Call API service
-      const data = await generateFlashcards({ text: validation.data });
+      // Call API service with selected model
+      const data = await generateFlashcards({ text: validation.data, model: selectedModel });
 
       // Transform and store proposals
       setProposalsFromApi(data.flashcard_proposals);
@@ -117,7 +119,7 @@ export function useGeneration() {
       setError(createApiError("Błąd generowania", err));
       setState("error");
     }
-  }, [text, setProposalsFromApi]);
+  }, [text, selectedModel, setProposalsFromApi]);
 
   /**
    * Saves the flashcard set with all proposals
@@ -182,6 +184,7 @@ export function useGeneration() {
     setState("idle");
     setText("");
     setSetName("");
+    setSelectedModel(DEFAULT_MODEL_ID);
     clearProposals();
     setError(null);
     setSavedSetInfo(null);
@@ -197,6 +200,7 @@ export function useGeneration() {
     state,
     text,
     setName,
+    selectedModel,
     proposals,
     error,
     savedSetInfo,
@@ -204,6 +208,7 @@ export function useGeneration() {
     // Text and name setters
     setText,
     setSetName,
+    setSelectedModel,
 
     // API actions
     generateProposals,

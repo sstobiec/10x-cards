@@ -75,7 +75,7 @@ export function FlashcardSetCard({ set, onDelete, isDeleting }: FlashcardSetCard
           </Button>
 
           <Button variant="outline" size="sm" asChild aria-label={`Edytuj zestaw ${set.name}`}>
-            <a href={`/sets/${set.id}/edit`}>
+            <a href={`/sets/${set.id}`}>
               <Pencil className="h-4 w-4" />
             </a>
           </Button>

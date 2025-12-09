@@ -121,7 +121,7 @@ export function SuccessDisplay({ savedSetInfo, onReset }: SuccessDisplayProps) {
             </Button>
 
             <Button asChild variant="ghost" size="lg">
-              <a href="/sets" data-testid="view-all-sets-button">
+              <a href="/dashboard" data-testid="view-all-sets-button">
                 <svg
                   className="h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"

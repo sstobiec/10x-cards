@@ -115,15 +115,21 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
       // Use new OpenRouterService with structured output
       const openRouterService = new OpenRouterService();
 
-      const systemPrompt = `You are an expert in creating learning materials. Your task is to generate flashcard proposals from the provided text. 
+      const systemPrompt = `You are an expert in creating learning materials. Your task is to generate flashcard proposals from the provided text.
 Focus on extracting key concepts, definitions, facts, and relationships.
+Analyze the content depth and complexity to determine the optimal number of flashcards (minimum 2, maximum 50).
 Return your response in JSON format according to the provided schema.`;
 
       const userPrompt = `Generate flashcard proposals from the following text. Each flashcard should have:
 - avers: A clear, specific question
 - rewers: A concise but complete answer
 
-Generate between 5 and 20 flashcards depending on content complexity.
+Determine the appropriate number of flashcards based on:
+- The amount and density of information in the text
+- The number of distinct concepts, facts, or relationships
+- The learning value of each potential flashcard
+
+You must generate at least 2 and at most 50 flashcards. Choose the optimal number that best covers the material without redundancy.
 
 Text:
 ${text}`;
