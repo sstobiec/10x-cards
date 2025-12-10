@@ -123,6 +123,7 @@ The application is deployed on **Cloudflare Pages/Workers** using the official `
 
 Deployments are automated via GitHub Actions:
 
+
 - **Production**: Pushes to `main` branch deploy to production
 - **Development**: Pushes to `develop` branch deploy to staging
 
